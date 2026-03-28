@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Historial - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-historial.css}">
+</head>
+
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">💪 TrackerGym</div>
+            <ul class="navbar-menu">
+                <li><a th:href="@{/home}">Dashboard</a></li>
+                <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
+                <li><a th:href="@{/cliente/agregar-serie}">Agregar Serie</a></li>
+                <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
+                <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
+                <li><a th:href="@{/cliente/historial}" class="active">Historial</a></li>
+                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+            </ul>
+            <div class="navbar-user">
+                <strong th:text="${#authentication.name}"></strong>
+                <form th:action="@{/logout}" method="post" style="margin:0">
+                    <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrap">
+        <div class="page-header">
+            <h1>📊 Historial Completo</h1>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <div th:if="${series.isEmpty()}" class="empty-state">
+            <div class="icon">📭</div>
+            <h3>Sin registros</h3>
+            <p>No tienes ningún entrenamiento registrado aún.</p>
+            <a th:href="@{/cliente/agregar-serie}" class="btn btn-primary">➕ Agregar Serie</a>
+        </div>
+
+        <div th:if="${!seriesPorFecha.isEmpty()}">
+            <div th:each="fecha : ${seriesPorFecha.keySet()}" class="section-card">
+                <div class="date-badge">
+                    <span>📅 <span th:text="${#temporals.format(fecha, 'EEEE, dd MMMM yyyy')}">Fecha</span></span>
+                    <span th:text="${seriesPorFecha.get(fecha).size()} + ' series'">series</span>
+                </div>
+
+                <div th:each="serie : ${seriesPorFecha.get(fecha)}">
+                    <div class="serie-item">
+                        <h4>
+                            <span th:text="${serie.numeroSerie}">1</span>ª serie de
+                            <span th:text="${serie.nombreEjercicio != null ? serie.nombreEjercicio : 'Ejercicio eliminado'}">Ejercicio</span>
+                        </h4>
+                        <div class="serie-info">
+                            <div><strong>Repeticiones:</strong> <span th:text="${serie.repeticiones}">10</span></div>
+                            <div th:if="${serie.peso != null}"><strong>Peso:</strong> <span
+                                    th:text="${serie.peso} + ' kg'">50 kg</span></div>
+                            <div th:if="${serie.notas != null}"><strong>Notas:</strong> <span
+                                    th:text="${serie.notas}">...</span></div>
+                        </div>
+                        <div style="margin-top:8px">
+                            <button type="button" class="btn btn-secondary btn-sm" 
+                                th:data-id="${serie.id}"
+                                th:data-reps="${serie.repeticiones}"
+                                th:data-peso="${serie.peso != null ? serie.peso : ''}"
+                                th:data-notas="${serie.notas != null ? serie.notas : ''}"
+                                onclick="openEditModal(this)">✏️ Editar</button>
+                            <form th:action="@{/cliente/eliminar-serie/{serieId}(serieId=${serie.id})}" method="post"
+                                style="display:inline;">
+                                <button type="submit" class="btn btn-danger btn-sm"
+                                    onclick="return confirm('¿Estás seguro?')">Eliminar</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Series Modal -->
+    <div id="editModal" class="modal" style="display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.5);">
+        <div class="modal-content" style="background-color:#fefefe; margin:15% auto; padding:20px; border:1px solid #888; width:80%; max-width:500px; border-radius:8px;">
+            <span class="close-modal" onclick="closeEditModal()" style="color:#aaa; float:right; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
+            <h3 style="margin-bottom: 20px; color: var(--primary);">✏️ Editar Serie</h3>
+
+            <form id="editForm" method="post">
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="editRepeticiones" style="display:block; margin-bottom:5px;">Repeticiones</label>
+                    <input type="number" id="editRepeticiones" name="repeticiones" required min="1" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="editPeso" style="display:block; margin-bottom:5px;">Peso (kg)</label>
+                    <input type="number" id="editPeso" name="peso" step="0.1" min="0" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                </div>
+
+                <div class="form-group" style="margin-bottom: 15px;">
+                    <label for="editNotas" style="display:block; margin-bottom:5px;">Notas</label>
+                    <input type="text" id="editNotas" name="notas" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                </div>
+
+                <div class="form-actions" style="margin-top: 24px; display:flex; gap:10px;">
+                    <button type="submit" class="btn btn-primary" style="flex:1;">Guardar Cambios</button>
+                    <button type="button" class="btn btn-secondary" style="flex:1;" onclick="closeEditModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openEditModal(btn) {
+            const id = btn.getAttribute('data-id');
+            const reps = btn.getAttribute('data-reps');
+            const peso = btn.getAttribute('data-peso');
+            const notas = btn.getAttribute('data-notas');
+
+            document.getElementById('editForm').action = '/cliente/editar-serie/' + id;
+            document.getElementById('editRepeticiones').value = reps;
+            document.getElementById('editPeso').value = peso;
+            document.getElementById('editNotas').value = notas;
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+        
+        // Cierra el modal si se hace clic fuera del contenido
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target == modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+</body>
+
+</html>

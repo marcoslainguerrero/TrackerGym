@@ -1,0 +1,21 @@
+/* ===== AUTO-NUMBER BADGE ===== */
+.numero-serie {
+    background: rgba(0, 212, 255, 0.08);
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    text-align: center;
+    border-left: 4px solid var(--accent);
+}
+
+.numero-serie .numero {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--accent)
+}
+
+.numero-serie p {
+    color: #666;
+    font-size: 13px;
+    margin: 4px 0
+}

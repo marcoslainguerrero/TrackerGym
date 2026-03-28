@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis Clientes - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/entrenador-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/entrenador-lista-clientes.css}">
+</head>
+
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>TrackerGym</h2>
+        </div>
+        <div class="user-badge">
+            <span>Conectado como</span>
+            <strong th:text="${#authentication.name}">Entrenador</strong>
+        </div>
+        <ul class="nav-menu">
+            <li><a th:href="@{/entrenador/dashboard}">📊 Dashboard</a></li>
+            <li><a th:href="@{/entrenador/clientes}" class="active">👤 Mis Clientes</a></li>
+            <li><a th:href="@{/entrenador/clientes/nuevo}">➕ Registrar Cliente</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-danger btn-block">Cerrar Sesión</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="header-bar">
+            <div class="page-header">
+                <h1>👥 Mis Clientes</h1>
+                <p>Gestiona y monitorea el progreso de tus clientes</p>
+            </div>
+            <a th:href="@{/entrenador/clientes/nuevo}" class="btn btn-primary">➕ Registrar Nuevo Cliente</a>
+        </div>
+
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+        <div class="table-wrap" th:if="${!clientes.isEmpty()}">
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>👤 Cliente</th>
+                        <th>👨‍🏫 Entrenador</th>
+                        <th>⚙️ Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr th:each="cliente : ${clientes}">
+                        <td>
+                            <div class="cell-name">
+                                <div class="avatar-circle"
+                                    th:text="${#strings.toUpperCase(#strings.substring(cliente.username, 0, 1))}">C
+                                </div>
+                                <span th:text="${cliente.username}">Cliente</span>
+                            </div>
+                        </td>
+                        <td th:text="${cliente.entrenador != null ? cliente.entrenador.username : 'Sin asignar'}">Sin
+                            asignar</td>
+                        <td>
+                            <a th:href="@{/entrenador/ver-cliente/{id}(id=${cliente.id})}"
+                                class="btn btn-primary btn-sm">📈 Ver Progreso</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div th:if="${clientes.isEmpty()}" class="empty-state">
+            <div class="icon">👤</div>
+            <h3>Aún no tienes clientes</h3>
+            <p>Registra tu primer cliente para comenzar a monitorear su progreso</p>
+            <a th:href="@{/entrenador/clientes/nuevo}" class="btn btn-primary">➕ Registrar Nuevo Cliente</a>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+
+</html>

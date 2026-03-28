@@ -1,0 +1,67 @@
+/* ===== AUTH PAGES (Login/Register) ===== */
+.auth-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+    padding: 20px;
+}
+
+.auth-card {
+    background: var(--white);
+    padding: 48px 40px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    width: 100%;
+    max-width: 420px;
+    animation: fadeUp .5s ease;
+}
+
+.auth-logo {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.auth-logo .icon {
+    font-size: 44px;
+    margin-bottom: 8px
+}
+
+.auth-logo h1 {
+    color: var(--primary);
+    font-size: 28px;
+    font-weight: 700
+}
+
+.auth-logo p {
+    color: #999;
+    font-size: 14px;
+    margin-top: 4px
+}
+
+/* ===== AUTH FOOTER ===== */
+.auth-footer {
+    text-align: center;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--light);
+    color: #666;
+    font-size: 14px;
+}
+
+.auth-footer a {
+    color: var(--accent);
+    font-weight: 600
+}
+
+.auth-footer a:hover {
+    color: var(--accent-dark)
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .auth-card {
+        padding: 32px 24px
+    }
+}

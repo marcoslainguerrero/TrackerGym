@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agregar Serie - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-agregar-serie.css}">
+</head>
+
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">💪 TrackerGym</div>
+            <ul class="navbar-menu">
+                <li><a th:href="@{/home}">Dashboard</a></li>
+                <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
+                <li><a th:href="@{/cliente/agregar-serie}" class="active">Agregar Serie</a></li>
+                <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
+                <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
+                <li><a th:href="@{/cliente/historial}">Historial</a></li>
+                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+            </ul>
+            <div class="navbar-user">
+                <strong th:text="${#authentication.name}"></strong>
+                <form th:action="@{/logout}" method="post" style="margin:0">
+                    <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrap" style="max-width: 600px;">
+        <div class="form-section">
+            <div class="page-header" style="text-align:center">
+                <h1>➕ Agregar Nueva Serie</h1>
+            </div>
+
+            <div th:if="${param.error}" class="alert alert-error" th:text="${param.error}"></div>
+
+            <form th:action="@{/cliente/guardar-serie}" method="post">
+                <div class="form-group">
+                    <label for="ejercicioId">Selecciona un Ejercicio *</label>
+                    <select id="ejercicioId" name="ejercicioId" required>
+                        <option value="">-- Elige un ejercicio --</option>
+                        <option th:each="ej : ${ejercicios}" th:value="${ej.id}" th:text="${ej.nombre}"
+                            th:selected="${ejercicio != null and ejercicio.id == ej.id}"></option>
+                    </select>
+                </div>
+
+                <div th:if="${proxNumeroSerie}" class="numero-serie">
+                    <p>Esta será tu serie:</p>
+                    <div class="numero" th:text="${proxNumeroSerie}"></div>
+                    <p th:if="${proxNumeroSerie > 1}">Continuarás tu serie anterior</p>
+                    <p th:if="${proxNumeroSerie == 1}">Primera serie del día</p>
+                </div>
+
+                <div class="two-col">
+                    <div class="form-group">
+                        <label for="repeticiones">Repeticiones *</label>
+                        <input type="number" id="repeticiones" name="repeticiones" min="1" max="100" required
+                            placeholder="10">
+                    </div>
+                    <div class="form-group">
+                        <label for="peso">Peso (kg)</label>
+                        <input type="number" id="peso" name="peso" min="0" step="0.5" placeholder="20.5">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="fecha">Fecha de la Serie *</label>
+                    <input type="date" id="fecha" name="fecha" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="notas">Notas (opcional)</label>
+                    <textarea id="notas" name="notas"
+                        placeholder="Ej: Sentí mucho esfuerzo en la serie 3..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block">💾 Guardar Serie</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('fecha').valueAsDate = new Date();
+    </script>
+</body>
+
+</html>

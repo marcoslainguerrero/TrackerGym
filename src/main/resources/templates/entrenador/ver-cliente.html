@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Progreso del Cliente - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/entrenador-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/entrenador-ver-cliente.css}">
+</head>
+
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>TrackerGym</h2>
+        </div>
+        <div class="user-badge">
+            <span>Conectado como</span>
+            <strong th:text="${#authentication.name}">Entrenador</strong>
+        </div>
+        <ul class="nav-menu">
+            <li><a th:href="@{/entrenador/dashboard}">📊 Dashboard</a></li>
+            <li><a th:href="@{/entrenador/clientes}">👤 Mis Clientes</a></li>
+            <li><a th:href="@{/entrenador/clientes/nuevo}">➕ Registrar Cliente</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-danger btn-block">Cerrar Sesión</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main">
+        <a th:href="@{/entrenador/dashboard}" class="btn-link" style="margin-bottom: 16px; display: inline-block;">←
+            Volver al Dashboard</a>
+
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <!-- Client Header -->
+        <div class="detail-header" th:if="${cliente}">
+            <h1 th:text="'📊 Progreso de ' + ${cliente.username}">Progreso del Cliente</h1>
+            <p>Entrenador: <strong
+                    th:text="${cliente.entrenador != null ? cliente.entrenador.username : 'Sin asignar'}"></strong></p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row" th:if="${cliente}">
+            <div class="stat-card">
+                <div class="label">Total de Series</div>
+                <div class="number" th:text="${series.size()}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Sesiones de Entrenamiento</div>
+                <div class="number" th:text="${seriesPorFecha.size()}">0</div>
+            </div>
+            <div class="stat-card" th:if="${seriesPorFecha.size() > 0}">
+                <div class="label">Promedio Series/Sesión</div>
+                <div class="number" th:text="${#numbers.formatDecimal(promedioSeries, 1, 1)}">
+                    0</div>
+            </div>
+        </div>
+
+        <!-- Series History -->
+        <div class="section-card" th:if="${cliente}">
+            <h2>📋 Historial de Entrenamientos</h2>
+
+            <div th:if="${#maps.isEmpty(seriesPorFecha)}" class="empty-state">
+                <div class="icon">📭</div>
+                <p>Este cliente aún no ha registrado ningún entrenamiento.</p>
+            </div>
+
+            <div th:each="fecha : ${seriesPorFecha.keySet()}">
+                <div class="date-badge">
+                    <span>📅 <span th:text="${#temporals.format(fecha, 'dd/MM/yyyy')}">Fecha</span></span>
+                    <span th:text="${seriesPorFecha.get(fecha).size()} + ' series'">series</span>
+                </div>
+
+                <div th:each="serie : ${seriesPorFecha.get(fecha)}">
+                    <div class="serie-item">
+                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                            <h4>
+                                <span
+                                    th:text="${serie.nombreEjercicio != null ? serie.nombreEjercicio : 'Ejercicio eliminado'}">Ejercicio</span>
+                                <span style="color: #999; font-weight: normal;"> — Serie <span
+                                        th:text="${serie.numeroSerie}">1</span></span>
+                            </h4>
+                            <div class="action-buttons">
+                                <button class="btn-icon" title="Editar" th:data-id="${serie.id}"
+                                    th:data-reps="${serie.repeticiones}"
+                                    th:data-peso="${serie.peso != null ? serie.peso : ''}"
+                                    th:data-notas="${serie.notas != null ? serie.notas : ''}"
+                                    onclick="openEditModal(this)">
+                                    ✏️
+                                </button>
+                                <form th:action="@{/entrenador/eliminar-serie/{id}(id=${serie.id})}" method="post"
+                                    onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta serie?');"
+                                    style="display:inline;">
+                                    <button type="submit" class="btn-icon" title="Eliminar"
+                                        style="color: #e74c3c;">🗑️</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="serie-info">
+                            <div><strong>Repeticiones:</strong> <span th:text="${serie.repeticiones}">10</span></div>
+                            <div th:if="${serie.peso != null}"><strong>Peso:</strong> <span
+                                    th:text="${serie.peso} + ' kg'">50 kg</span></div>
+                            <div th:if="${serie.notas != null and serie.notas != ''}"><strong>Notas:</strong> <span
+                                    th:text="${serie.notas}">...</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Other Clients -->
+        <div class="section-card" th:if="${clientes != null and clientes.size() > 1}">
+            <h2>👥 Otros Clientes</h2>
+            <div class="clients-grid">
+                <div th:each="c : ${clientes}" th:if="${c.id != cliente.id}">
+                    <a th:href="@{/entrenador/ver-cliente/{id}(id=${c.id})}">
+                        <div class="client-card">
+                            <div class="header">
+                                <div class="avatar">👤</div>
+                                <div>
+                                    <h3 th:text="${c.username}">Cliente</h3>
+                                    <small>Series: <span th:text="${clienteSeries.get(c.id) ?: 0}">0</span></small>
+                                </div>
+                            </div>
+                            <div class="footer">
+                                <span class="btn btn-primary btn-sm btn-block">📈 Ver progreso</span>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Edit Series Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <h3 style="margin-bottom: 20px; color: var(--primary);">✏️ Editar Serie</h3>
+
+            <form id="editForm" method="post">
+                <div class="form-group">
+                    <label for="editRepeticiones">Repeticiones</label>
+                    <input type="number" id="editRepeticiones" name="repeticiones" required min="1">
+                </div>
+
+                <div class="form-group">
+                    <label for="editPeso">Peso (kg)</label>
+                    <input type="number" id="editPeso" name="peso" step="0.1" min="0">
+                </div>
+
+                <div class="form-group">
+                    <label for="editNotas">Notas</label>
+                    <input type="text" id="editNotas" name="notas">
+                </div>
+
+                <div class="form-actions" style="margin-top: 24px;">
+                    <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
+                    <button type="button" class="btn btn-secondary btn-block"
+                        onclick="closeEditModal()">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('click', function (e) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+
+            // Close modal if clicked outside
+            const modal = document.getElementById('editModal');
+            if (e.target === modal) {
+                closeEditModal();
+            }
+        });
+
+        function openEditModal(btn) {
+            const id = btn.getAttribute('data-id');
+            const reps = btn.getAttribute('data-reps');
+            const peso = btn.getAttribute('data-peso');
+            const notas = btn.getAttribute('data-notas');
+
+            document.getElementById('editForm').action = '/entrenador/editar-serie/' + id;
+            document.getElementById('editRepeticiones').value = reps;
+            document.getElementById('editPeso').value = peso;
+            document.getElementById('editNotas').value = notas;
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+    </script>
+</body>
+
+</html>

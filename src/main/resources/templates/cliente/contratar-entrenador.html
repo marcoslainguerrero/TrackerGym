@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contratar Entrenador - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-contratar-entrenador.css}">
+</head>
+
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">  💪 TrackerGym</div>
+            <ul class="navbar-menu">
+                <li><a th:href="@{/home}">Dashboard</a></li>
+                <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
+                <li><a th:href="@{/cliente/agregar-serie}">Agregar Serie</a></li>
+                <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
+                <li><a th:href="@{/cliente/contratar-entrenador}" class="active">Entrenador</a></li>
+                <li><a th:href="@{/cliente/historial}">Historial</a></li>
+                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+            </ul>
+            <div class="navbar-user">
+                <strong th:text="${#authentication.name}"></strong>
+                <form th:action="@{/logout}" method="post" style="margin:0">
+                    <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrap" style="max-width: 600px;">
+        <div class="form-section">
+            <div class="page-header" style="text-align:center">
+                <h1>👨‍🏫 Contratar Entrenador</h1>
+                <p>Selecciona un entrenador para comenzar tu transformación</p>
+            </div>
+
+            <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+            <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+
+            <div th:if="${entrenadorActual != null}" class="info-box">
+                <p>Entrenador Actual: <strong th:text="${entrenadorActual.username}"></strong></p>
+            </div>
+
+            <div th:if="${entrenadores.isEmpty()}" class="empty-state">
+                <div class="icon">👨‍🏫</div>
+                <p>No hay entrenadores disponibles en este momento.</p>
+            </div>
+
+            <form th:if="${!entrenadores.isEmpty()}" method="post" th:action="@{/cliente/guardar-contratacion}">
+                <div class="form-group">
+                    <label for="entrenadorId">Selecciona un Entrenador Personal</label>
+                    <select id="entrenadorId" name="entrenadorId" required>
+                        <option value="">-- Elige un entrenador --</option>
+                        <option th:each="entrenador : ${entrenadores}" th:value="${entrenador.id}"
+                            th:text="${entrenador.username}"></option>
+                    </select>
+                </div>
+
+                <div class="alert alert-info">
+                    ℹ️ Tu entrenador personal podrá ver, editar y monitorear tu progreso en los ejercicios y tus series
+                    registradas.
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">✅ Contratar Entrenador</button>
+                    <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

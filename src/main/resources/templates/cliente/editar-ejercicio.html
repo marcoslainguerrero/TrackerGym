@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Ejercicio - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-anadir-ejercicio.css}">
+</head>
+
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">💪 TrackerGym</div>
+            <ul class="navbar-menu">
+                <li><a th:href="@{/home}">Dashboard</a></li>
+                <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
+                <li><a th:href="@{/cliente/agregar-serie}">Agregar Serie</a></li>
+                <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
+                <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
+                <li><a th:href="@{/cliente/historial}">Historial</a></li>
+                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+            </ul>
+            <div class="navbar-user">
+                <strong th:text="${#authentication.name}"></strong>
+                <form th:action="@{/logout}" method="post" style="margin:0">
+                    <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrap">
+        <div class="page-header">
+            <h1>✏️ Editar Ejercicio</h1>
+        </div>
+
+        <div class="form-container">
+            <form th:action="@{/cliente/guardar-ejercicio-editado/{id}(id=${ejercicio.id})}" method="post">
+                <div class="form-group">
+                    <label for="nombre">Nombre del Ejercicio *</label>
+                    <input type="text" id="nombre" name="nombre" th:value="${ejercicio.nombre}" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="grupoMuscular">Grupo Muscular *</label>
+                    <select id="grupoMuscular" name="grupoMuscular" required>
+                        <option value="Pecho" th:selected="${ejercicio.grupoMuscular == 'Pecho'}">Pecho</option>
+                        <option value="Espalda" th:selected="${ejercicio.grupoMuscular == 'Espalda'}">Espalda</option>
+                        <option value="Piernas" th:selected="${ejercicio.grupoMuscular == 'Piernas'}">Piernas</option>
+                        <option value="Hombros" th:selected="${ejercicio.grupoMuscular == 'Hombros'}">Hombros</option>
+                        <option value="Brazos" th:selected="${ejercicio.grupoMuscular == 'Brazos'}">Brazos</option>
+                        <option value="Core" th:selected="${ejercicio.grupoMuscular == 'Core'}">Core</option>
+                        <option value="Cardio" th:selected="${ejercicio.grupoMuscular == 'Cardio'}">Cardio</option>
+                        <option value="Cuerpo Completo" th:selected="${ejercicio.grupoMuscular == 'Cuerpo Completo'}">Cuerpo Completo</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="descripcion">Descripción / Notas adicionales</label>
+                    <textarea id="descripcion" name="descripcion" rows="4" th:text="${ejercicio.descripcion}"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
+                    <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary btn-block" style="text-align: center;">Cancelar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

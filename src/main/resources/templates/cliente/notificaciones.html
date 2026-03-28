@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notificaciones - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-navbar.css}">
+    <style>
+        .notifications-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .notification-card {
+            background-color: var(--card-bg);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            position: relative;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-left: 4px solid var(--primary);
+        }
+
+        .notification-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .notification-card.unread {
+            border-left: 4px solid var(--accent);
+            background-color: var(--secondary);
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notification-title {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notification-date {
+            font-size: 0.9em;
+            color: #888;
+        }
+
+        .notification-body {
+            color: var(--text-muted);
+            line-height: 1.5;
+            font-size: 1.05em;
+        }
+
+        .new-badge {
+            background-color: var(--accent);
+            color: white;
+            font-size: 0.7em;
+            padding: 2px 6px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">💪 TrackerGym</div>
+            <ul class="navbar-menu">
+                <li><a th:href="@{/home}">Dashboard</a></li>
+                <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
+                <li><a th:href="@{/cliente/agregar-serie}">Agregar Serie</a></li>
+                <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
+                <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
+                <li><a th:href="@{/cliente/historial}">Historial</a></li>
+                <li><a th:href="@{/cliente/notificaciones}" class="active">🔔 Notificaciones</a></li>
+            </ul>
+            <div class="navbar-user">
+                <strong th:text="${#authentication.name}"></strong>
+                <form th:action="@{/logout}" method="post" style="margin:0">
+                    <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrap">
+        <div class="page-header" style="text-align: center; margin-bottom: 40px;">
+            <h1>🔔 Historial de Entrenador</h1>
+            <p style="color: var(--text-muted);">Registro de modificaciones realizadas por tu entrenador en tu rutina</p>
+        </div>
+
+        <div class="notifications-container">
+            <div th:if="${notificaciones.isEmpty()}" class="empty-state">
+                <div class="icon">📭</div>
+                <h3>Sin notificaciones</h3>
+                <p>Tu entrenador no ha realizado ninguna modificación en tus registros por el momento.</p>
+            </div>
+
+            <div th:if="${!notificaciones.isEmpty()}" th:each="notificacion : ${notificaciones}" class="notification-card" th:classappend="${!notificacion.leida} ? 'unread' : ''">
+                <div class="notification-header">
+                    <div class="notification-title">
+                        <span>👨‍🏫 Cambio del Entrenador</span>
+                        <span th:if="${!notificacion.leida}" class="new-badge">Nuevo</span>
+                    </div>
+                    <div class="notification-date" th:text="${#temporals.format(notificacion.fechaCreacion, 'dd MMM yyyy HH:mm')}">
+                        Fecha
+                    </div>
+                </div>
+                <div class="notification-body" th:text="${notificacion.mensaje}">
+                    Mensaje de la notificación.
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

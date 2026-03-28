@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Control | TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/entrenador-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/entrenador-home.css}">
+</head>
+
+<body>
+
+    <aside class="sidebar">
+        <div class="logo-area">
+            <h2>TrackerGym</h2>
+        </div>
+        <div class="user-info">
+            <p>Conectado como:</p>
+            <strong th:text="${#authentication.name}">Entrenador</strong>
+        </div>
+
+        <nav class="menu">
+            <ul>
+                <li>
+                    <a th:href="@{/home}" class="active">🏠 Inicio</a>
+                </li>
+                <li>
+                    <a th:href="@{/entrenador/dashboard}">📊 Dashboard</a>
+                </li>
+                <li>
+                    <a th:href="@{/entrenador/clientes}">👤 Mis Clientes</a>
+                </li>
+                <li>
+                    <a href="#">📈 Reportes</a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="logout-area">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn-danger" style="width: 100%;">Cerrar Sesión</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main-content">
+        <div class="welcome-box">
+            <h1>¡Bienvenido al Panel de Control!</h1>
+            <p th:text="'Hoy es ' + ${#dates.format(#dates.createNow(), 'dd/MM/yyyy')}"></p>
+            <p>Administra tus clientes y monitorea su progreso en los entrenamientos</p>
+        </div>
+
+        <section class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Dashboard</h3>
+                <p>Visualiza un resumen de todos tus clientes y sus estadísticas de entrenamiento.</p>
+                <a th:href="@{/entrenador/dashboard}" class="btn-link">Ir al Dashboard →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">👥</div>
+                <h3>Gestión de Clientes</h3>
+                <p>Administra los datos de tus clientes y controla sus entrenamientos.</p>
+                <a th:href="@{/entrenador/clientes}" class="btn-link">Ver Clientes →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">📈</div>
+                <h3>Reportes</h3>
+                <p>Accede a reportes detallados del progreso de tus clientes y análisis de desempeño.</p>
+                <a href="#" class="btn-link">Ver Reportes →</a>
+            </div>
+
+            <div class="feature-card">
+                <div class="feature-icon">⚙️</div>
+                <h3>Configuración</h3>
+                <p>Personaliza los ajustes del sistema y tus preferencias de entrenador.</p>
+                <a href="#" class="btn-link">Configurar →</a>
+            </div>
+        </section>
+
+        <div class="info-section">
+            <h2>📋 Información del Sistema</h2>
+            <div class="info-box">
+                <strong>Rol de Usuario:</strong> ADMINISTRADOR/ENTRENADOR
+                <br><br>
+                Tienes acceso total a:
+                <ul style="margin: 10px 0 0 20px; padding-left: 0;">
+                    <li>Gestión completa de clientes</li>
+                    <li>Monitoreo de entrenamientos y series</li>
+                    <li>Reportes de progreso</li>
+                    <li>Análisis estadísticos</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+
+</body>
+
+</html>
