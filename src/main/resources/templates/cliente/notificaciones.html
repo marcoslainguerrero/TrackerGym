@@ -78,7 +78,8 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand">💪 TrackerGym</div>
+            <div class="navbar-brand"><img th:src="@{/img/logosintexto.svg}" alt="Logo" class="nav-logo"> TrackerGym
+            </div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -99,8 +100,9 @@
 
     <div class="content-wrap">
         <div class="page-header" style="text-align: center; margin-bottom: 40px;">
-            <h1>🔔 Historial de Entrenador</h1>
-            <p style="color: var(--text-muted);">Registro de modificaciones realizadas por tu entrenador en tu rutina</p>
+            <h1>🔔 Historial de Notificaciones.</h1>
+            <p style="color: var(--text-muted);">Registro de modificaciones realizadas por tu entrenador en tus series.
+            </p>
         </div>
 
         <div class="notifications-container">
@@ -110,13 +112,15 @@
                 <p>Tu entrenador no ha realizado ninguna modificación en tus registros por el momento.</p>
             </div>
 
-            <div th:if="${!notificaciones.isEmpty()}" th:each="notificacion : ${notificaciones}" class="notification-card" th:classappend="${!notificacion.leida} ? 'unread' : ''">
+            <div th:if="${!notificaciones.isEmpty()}" th:each="notificacion : ${notificaciones}"
+                class="notification-card" th:classappend="${!notificacion.leida} ? 'unread' : ''">
                 <div class="notification-header">
                     <div class="notification-title">
-                        <span>👨‍🏫 Cambio del Entrenador</span>
+                        <span>ℹ️ Nuevo cambio.</span>
                         <span th:if="${!notificacion.leida}" class="new-badge">Nuevo</span>
                     </div>
-                    <div class="notification-date" th:text="${#temporals.format(notificacion.fechaCreacion, 'dd MMM yyyy HH:mm')}">
+                    <div class="notification-date"
+                        th:text="${#temporals.format(notificacion.fechaCreacion, 'dd MMM yyyy HH:mm')}">
                         Fecha
                     </div>
                 </div>

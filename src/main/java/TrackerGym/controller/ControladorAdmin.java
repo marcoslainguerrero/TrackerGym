@@ -1,10 +1,10 @@
 package TrackerGym.controller;
 
 import TrackerGym.entity.User;
-import TrackerGym.entity.Exercise;
+import TrackerGym.entity.SerieRealizada;
 import TrackerGym.repository.UserRepository;
 import TrackerGym.service.ServicioUsuarios;
-import TrackerGym.service.ExerciseService;
+import TrackerGym.service.SerieRealizadaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -30,7 +30,7 @@ public class ControladorAdmin {
     private UserRepository userRepository;
 
     @Autowired
-    private ExerciseService exerciseService;
+    private SerieRealizadaService serieRealizadaService;
 
     /**
      * Gestiona la redirección inicial tras el login exitoso.
@@ -51,17 +51,18 @@ public class ControladorAdmin {
         try {
             Optional<User> usuario = userRepository.findByUsername(auth.getName());
             if (usuario.isPresent()) {
-                List<Exercise> ejercicios = exerciseService.obtenerEjerciciosDelUsuario(usuario.get());
+                List<SerieRealizada> ejercicios = serieRealizadaService.obtenerSeriesDelUsuario(usuario.get());
 
                 // Calcular estadísticas
                 int diasActivos = (int) ejercicios.stream()
-                        .map(Exercise::getFecha)
+                        .map(SerieRealizada::getFecha)
+                        .filter(java.util.Objects::nonNull)
                         .distinct()
                         .count();
 
                 YearMonth mesActual = YearMonth.now();
                 long ejerciciosMesActual = ejercicios.stream()
-                        .filter(e -> YearMonth.from(e.getFecha()).equals(mesActual))
+                        .filter(e -> e.getFecha() != null && YearMonth.from(e.getFecha()).equals(mesActual))
                         .count();
 
                 model.addAttribute("ejercicios", ejercicios);
