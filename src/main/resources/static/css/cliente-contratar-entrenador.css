@@ -1,0 +1,19 @@
+/* ===== INFO BOX (trainer status etc) ===== */
+.info-box {
+    background: rgba(0, 212, 255, 0.08);
+    padding: 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 20px;
+    text-align: center;
+    border-left: 4px solid var(--accent);
+}
+
+.info-box p {
+    color: var(--dark);
+    margin: 0
+}
+
+.info-box strong {
+    color: var(--accent);
+    font-size: 16px
+}

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Dashboard - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-dashboard.css}">
+</head>
+
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">💪 TrackerGym</div>
+            <ul class="navbar-menu">
+                <li><a th:href="@{/home}" class="active">Dashboard</a></li>
+                <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
+                <li><a th:href="@{/cliente/agregar-serie}">Agregar Serie</a></li>
+                <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
+                <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
+                <li><a th:href="@{/cliente/historial}">Historial</a></li>
+                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+            </ul>
+            <div class="navbar-user">
+                <span>Bienvenido, <strong th:text="${#authentication.name}"></strong></span>
+                <form th:action="@{/logout}" method="post" style="margin:0">
+                    <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrap">
+        <div class="page-header">
+            <h1>📊 Mi Dashboard</h1>
+            <p>Resumen de tu actividad de entrenamiento</p>
+        </div>
+
+        <div th:if="${param.success}" class="alert alert-success">Datos actualizados correctamente</div>
+        <div th:if="${param.error}" class="alert alert-error" th:text="${param.error}"></div>
+
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="label">Series Realizadas</div>
+                <div class="number" th:text="${ejercicios.size()}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Días Activos</div>
+                <div class="number" th:text="${diasActivos}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Series Este Mes</div>
+                <div class="number" th:text="${ejerciciosMesActual}">0</div>
+            </div>
+        </div>
+
+        <div class="section-card">
+            <h2>🚀 Acciones Rápidas</h2>
+            <div class="stats-row">
+                <a th:href="@{/cliente/ejercicios}" class="btn btn-primary">📋 Ver Ejercicios</a>
+                <a th:href="@{/cliente/agregar-serie}" class="btn btn-primary">➕ Agregar Serie</a>
+                <a th:href="@{/cliente/historial}" class="btn btn-secondary">📊 Ver Historial</a>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

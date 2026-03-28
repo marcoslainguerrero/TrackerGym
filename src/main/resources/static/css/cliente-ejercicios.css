@@ -1,0 +1,55 @@
+/* ===== EXERCISE CARDS ===== */
+.ejercicios-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.ejercicio-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    transition: all .25s ease;
+}
+
+.ejercicio-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg)
+}
+
+.ejercicio-card h3 {
+    color: var(--accent);
+    margin-bottom: 8px;
+    font-size: 18px
+}
+
+.ejercicio-card p {
+    color: #666;
+    font-size: 14px;
+    margin: 4px 0
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 8px;
+}
+
+.badge-success {
+    background: #e8f5e9;
+    color: #2e7d32
+}
+
+.card-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 14px;
+}
+
+.card-actions .btn {
+    flex: 1
+}

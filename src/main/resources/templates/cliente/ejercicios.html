@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ejercicios - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-navbar.css}">
+    <link rel="stylesheet" th:href="@{/css/cliente-ejercicios.css}">
+</head>
+
+<body>
+    <nav class="top-navbar">
+        <div class="navbar-container">
+            <div class="navbar-brand">💪 TrackerGym</div>
+            <ul class="navbar-menu">
+                <li><a th:href="@{/home}">Dashboard</a></li>
+                <li><a th:href="@{/cliente/ejercicios}" class="active">Ejercicios</a></li>
+                <li><a th:href="@{/cliente/agregar-serie}">Agregar Serie</a></li>
+                <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
+                <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
+                <li><a th:href="@{/cliente/historial}">Historial</a></li>
+                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+            </ul>
+            <div class="navbar-user">
+                <strong th:text="${#authentication.name}"></strong>
+                <form th:action="@{/logout}" method="post" style="margin:0">
+                    <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content-wrap">
+        <div class="header-bar">
+            <div class="page-header">
+                <h1>📋 Mis Ejercicios</h1>
+            </div>
+            <a th:href="@{/cliente/anadir-ejercicio}" class="btn btn-primary">➕ Nuevo Ejercicio</a>
+        </div>
+
+        <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
+        <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
+
+        <div th:if="${ejercicios.isEmpty()}" class="empty-state">
+            <div class="icon">📋</div>
+            <h3>No hay ejercicios disponibles</h3>
+            <p>Comienza añadiendo tu primer ejercicio</p>
+            <a th:href="@{/cliente/anadir-ejercicio}" class="btn btn-primary">➕ Agregar Ejercicio</a>
+        </div>
+
+        <div th:if="${!ejercicios.isEmpty()}" class="ejercicios-grid">
+            <div th:each="ejercicio : ${ejercicios}" class="ejercicio-card">
+                <h3 th:text="${ejercicio.nombre}">Ejercicio</h3>
+                <p th:if="${ejercicio.descripcion}" th:text="${ejercicio.descripcion}"></p>
+                <span th:if="${ejercicio.grupoMuscular}" class="badge badge-success"
+                    th:text="${ejercicio.grupoMuscular}"></span>
+                <div class="card-actions">
+                    <a th:href="@{/cliente/agregar-serie(ejercicioId=${ejercicio.id})}"
+                        class="btn btn-primary btn-sm">Agregar Serie</a>
+                    <a th:if="${ejercicio.user != null}" th:href="@{/cliente/editar-ejercicio/{id}(id=${ejercicio.id})}"
+                        class="btn btn-secondary btn-sm">✏️ Editar</a>
+                    <form th:if="${ejercicio.user != null}" th:action="@{/cliente/eliminar-ejercicio/{id}(id=${ejercicio.id})}" method="post"
+                        style="margin:0">
+                        <button type="submit" class="btn btn-danger btn-sm"
+                            onclick="return confirm('¿Estás seguro?')">🗑️</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

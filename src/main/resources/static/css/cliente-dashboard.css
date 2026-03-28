@@ -1,0 +1,49 @@
+/* ===== STATS ROW ===== */
+.stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.stat-card {
+    background: var(--white);
+    padding: 20px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border-left: 4px solid var(--accent);
+    text-align: center;
+    transition: transform .2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-4px)
+}
+
+.stat-card .number {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--accent);
+    margin: 8px 0
+}
+
+.stat-card .label {
+    color: #999;
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: .3px
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .stats-row {
+        grid-template-columns: repeat(2, 1fr)
+    }
+}
+
+@media (max-width: 480px) {
+    .stats-row {
+        grid-template-columns: 1fr
+    }
+}

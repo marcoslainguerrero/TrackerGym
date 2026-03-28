@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Entrenador - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/common.css}">
+    <link rel="stylesheet" th:href="@{/css/entrenador-sidebar.css}">
+    <link rel="stylesheet" th:href="@{/css/entrenador-dashboard.css}">
+</head>
+
+<body>
+    <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">☰</button>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <h2>TrackerGym</h2>
+        </div>
+        <div class="user-badge">
+            <span>Conectado como</span>
+            <strong th:text="${#authentication.name}">Entrenador</strong>
+        </div>
+        <ul class="nav-menu">
+            <li><a th:href="@{/entrenador/dashboard}" class="active">📊 Dashboard</a></li>
+            <li><a th:href="@{/entrenador/clientes}">👤 Mis Clientes</a></li>
+            <li><a th:href="@{/entrenador/clientes/nuevo}">➕ Registrar Cliente</a></li>
+        </ul>
+        <div class="sidebar-footer">
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-danger btn-block">Cerrar Sesión</button>
+            </form>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="page-header">
+            <h1>📊 Dashboard del Entrenador</h1>
+            <p>Monitorea el progreso de tus clientes</p>
+        </div>
+
+        <!-- Stats -->
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="label">Total de Clientes</div>
+                <div class="number" th:text="${clientes.size()}">0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Series Registradas</div>
+                <div class="number" th:text="${totalSeries}">0</div>
+            </div>
+            <div class="stat-card" th:if="${clientes.size() > 0}">
+                <div class="label">Promedio por Cliente</div>
+                <div class="number"
+                    th:text="${#numbers.formatDecimal(totalSeries / clientes.size(), 0, 'DEFAULT', 1, 'DEFAULT')}">0
+                </div>
+            </div>
+        </div>
+
+        <!-- Client Cards -->
+        <h2 th:if="${!clientes.isEmpty()}" style="color: var(--primary); margin-bottom: 20px;">👥 Mis Clientes Activos
+        </h2>
+
+        <div th:if="${clientes.isEmpty()}" class="empty-state">
+            <div class="icon">👤</div>
+            <h3>Aún no tienes clientes</h3>
+            <p>Comienza registrando clientes para monitorear su progreso.</p>
+            <a th:href="@{/entrenador/clientes/nuevo}" class="btn btn-primary">➕ Agregar Cliente</a>
+        </div>
+
+        <div class="clients-grid" th:if="${!clientes.isEmpty()}">
+            <div class="client-card" th:each="cliente : ${clientes}">
+                <div class="header">
+                    <div class="avatar">👤</div>
+                    <div>
+                        <h3 th:text="${cliente.username}">Cliente</h3>
+                        <small>Cliente activo</small>
+                    </div>
+                </div>
+                <div class="body">
+                    <div class="client-stat-row">
+                        <span>Series Registradas</span>
+                        <span class="val" th:text="${clienteSeries.get(cliente.id) ?: 0}">0</span>
+                    </div>
+                    <div class="client-stat-row" th:if="${ultimoRegistro.containsKey(cliente.id)}">
+                        <span>Última Sesión</span>
+                        <span th:text="${#temporals.format(ultimoRegistro.get(cliente.id), 'dd/MM/yyyy')}">Fecha</span>
+                    </div>
+                    <div class="client-stat-row" th:if="${!ultimoRegistro.containsKey(cliente.id)}">
+                        <span>Última Sesión</span>
+                        <span style="color: #999;">Sin registros</span>
+                    </div>
+                </div>
+                <div class="footer">
+                    <a th:href="@{/entrenador/ver-cliente/{id}(id=${cliente.id})}"
+                        class="btn btn-primary btn-sm btn-block">📈 Ver Progreso</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Close sidebar on outside click (mobile)
+        document.addEventListener('click', function (e) {
+            const sidebar = document.querySelector('.sidebar');
+            const toggle = document.querySelector('.sidebar-toggle');
+            if (window.innerWidth <= 768 && sidebar.classList.contains('open') && !sidebar.contains(e.target) && !toggle.contains(e.target)) {
+                sidebar.classList.remove('open');
+            }
+        });
+    </script>
+</body>
+
+</html>
