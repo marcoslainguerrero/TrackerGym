@@ -17,3 +17,79 @@
     color: var(--accent);
     font-size: 16px
 }
+
+/* ===== PAYMENT MODAL ===== */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(26, 26, 46, 0.8);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.3s ease;
+}
+
+.payment-modal-content {
+    background: var(--white);
+    width: 100%;
+    max-width: 450px;
+    border-radius: var(--radius);
+    padding: 32px;
+    position: relative;
+    box-shadow: var(--shadow-lg);
+    animation: slideDown 0.4s ease;
+}
+
+.close-modal {
+    position: absolute;
+    top: 16px;
+    right: 20px;
+    font-size: 28px;
+    color: #999;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s;
+}
+
+.close-modal:hover {
+    color: var(--danger);
+}
+
+.payment-header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.payment-header h2 {
+    color: var(--primary);
+    font-size: 22px;
+    margin-bottom: 8px;
+}
+
+.payment-header p {
+    color: #666;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.price-badge {
+    display: inline-block;
+    background: rgba(0, 212, 255, 0.1);
+    color: var(--accent-dark);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-weight: 700;
+    font-size: 18px;
+    border: 1px solid rgba(0, 212, 255, 0.2);
+}
+
+.payment-form .form-group {
+    margin-bottom: 16px;
+}
+
+.payment-form label {
+    font-size: 12px;
+    color: #666;
+}

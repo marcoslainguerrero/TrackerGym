@@ -21,6 +21,12 @@
     margin-bottom: 20px
 }
 
+.sidebar-logo {
+    max-width: 130px;
+    height: auto;
+    margin-bottom: 5px;
+}
+
 .sidebar .logo h2 {
     color: var(--accent);
     font-size: 22px

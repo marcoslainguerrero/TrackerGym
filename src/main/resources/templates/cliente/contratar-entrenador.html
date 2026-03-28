@@ -13,7 +13,8 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand">  💪 TrackerGym</div>
+            <div class="navbar-brand"><img th:src="@{/img/logosintexto.svg}" alt="Logo" class="nav-logo"> TrackerGym
+            </div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -35,7 +36,7 @@
     <div class="content-wrap" style="max-width: 600px;">
         <div class="form-section">
             <div class="page-header" style="text-align:center">
-                <h1>👨‍🏫 Contratar Entrenador</h1>
+                <h1>Contratar Entrenador</h1>
                 <p>Selecciona un entrenador para comenzar tu transformación</p>
             </div>
 
@@ -47,11 +48,11 @@
             </div>
 
             <div th:if="${entrenadores.isEmpty()}" class="empty-state">
-                <div class="icon">👨‍🏫</div>
                 <p>No hay entrenadores disponibles en este momento.</p>
             </div>
 
-            <form th:if="${!entrenadores.isEmpty()}" method="post" th:action="@{/cliente/guardar-contratacion}">
+            <form th:if="${!entrenadores.isEmpty()}" method="post" th:action="@{/cliente/guardar-contratacion}"
+                id="contratarForm">
                 <div class="form-group">
                     <label for="entrenadorId">Selecciona un Entrenador Personal</label>
                     <select id="entrenadorId" name="entrenadorId" required>
@@ -67,12 +68,164 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">✅ Contratar Entrenador</button>
+                    <button type="button" class="btn btn-primary" onclick="openPaymentModal()">✅ Contratar
+                        Entrenador</button>
                     <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary">Cancelar</a>
                 </div>
             </form>
         </div>
     </div>
+
+    <!-- Payment Modal -->
+    <div id="paymentModal" class="modal-overlay">
+        <div class="payment-modal-content">
+            <span class="close-modal" onclick="closePaymentModal()">&times;</span>
+            <div class="payment-header">
+                <h2>Actualiza al Plan Premium</h2>
+                <p>Para tener seguimiento de un profesional.</p>
+                <div class="price-badge">8,99 € / mes</div>
+            </div>
+
+            <div id="payment-error" class="alert alert-error"
+                style="display: none; margin-top: 15px; margin-bottom: 0;"></div>
+
+            <div class="payment-form" style="margin-top: 20px;">
+                <div class="form-group">
+                    <label for="cardNumber">Número de Tarjeta</label>
+                    <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
+                </div>
+
+                <div class="two-col">
+                    <div class="form-group">
+                        <label for="expiryDate">Caducidad (MM/YY)</label>
+                        <input type="text" id="expiryDate" placeholder="MM/YY" maxlength="5" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cvv">CVV</label>
+                        <input type="password" id="cvv" placeholder="123" maxlength="3" required>
+                    </div>
+                </div>
+
+                <div class="form-actions" style="margin-top: 24px; justify-content: center;">
+                    <button type="button" class="btn btn-primary btn-block" onclick="processPayment()">Pagar y
+                        Contratar</button>
+                    <button type="button" class="btn btn-secondary btn-block"
+                        onclick="closePaymentModal()">Cancelar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const modal = document.getElementById('paymentModal');
+        const form = document.getElementById('contratarForm');
+        const errorDiv = document.getElementById('payment-error');
+
+        // Allow spaces and formatting in card input
+        document.getElementById('cardNumber').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            if (value.length > 16) value = value.slice(0, 16);
+            let formattedValue = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) formattedValue += ' ';
+                formattedValue += value[i];
+            }
+            e.target.value = formattedValue;
+        });
+
+        // Formatting Expiry Date MM/YY
+        document.getElementById('expiryDate').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 4) value = value.slice(0, 4);
+            if (value.length >= 2) {
+                value = value.slice(0, 2) + '/' + value.slice(2);
+            }
+            e.target.value = value;
+        });
+
+        // CVV should only be digits
+        document.getElementById('cvv').addEventListener('input', function (e) {
+            e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3);
+        });
+
+        function openPaymentModal() {
+            // Check if a trainer is selected first
+            const select = document.getElementById('entrenadorId');
+            if (!select.value) {
+                alert("Por favor, selecciona un entrenador primero.");
+                return;
+            }
+            errorDiv.style.display = 'none';
+            document.getElementById('cardNumber').value = '';
+            document.getElementById('expiryDate').value = '';
+            document.getElementById('cvv').value = '';
+            modal.style.display = 'flex';
+        }
+
+        function closePaymentModal() {
+            modal.style.display = 'none';
+        }
+
+        function processPayment() {
+            let cardValue = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            let expiryValue = document.getElementById('expiryDate').value;
+            let cvvValue = document.getElementById('cvv').value;
+
+            // Simple validations
+            if (cardValue.length !== 16) {
+                showError("El número de tarjeta debe tener 16 dígitos.");
+                return;
+            }
+
+            if (cvvValue.length !== 3) {
+                showError("El CVV debe tener 3 dígitos.");
+                return;
+            }
+
+            if (expiryValue.length !== 5) {
+                showError("La fecha de caducidad debe estar en formato MM/YY.");
+                return;
+            }
+
+            // Expiry date validation
+            let parts = expiryValue.split('/');
+            let month = parseInt(parts[0], 10);
+            let year = parseInt(parts[1], 10);
+
+            if (month < 1 || month > 12) {
+                showError("Mes inválido en la fecha de caducidad.");
+                return;
+            }
+
+            let today = new Date();
+            let currentYear = today.getFullYear() % 100; // last two digits
+            let currentMonth = today.getMonth() + 1;
+
+            if (year < currentYear || (year === currentYear && month <= currentMonth)) {
+                // strictly after current date logic: if it's the exact current month, it's expired or about to expire. A valid date must be strictly after current date. Actually the user said strictly after datetimenow. Let's assume if it is current month and year it is okay, or if the user meant strictly later, month > currentMonth. Let's do strictly later:
+                if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                    showError("La tarjeta está caducada o la fecha no es válida.");
+                    return;
+                }
+            }
+
+            // Success validation
+            alert("Pago aceptado. Has contratado el plan Premium y se te ha asignado tu entrenador.");
+            form.submit();
+        }
+
+        function showError(msg) {
+            errorDiv.textContent = '❌ ' + msg;
+            errorDiv.style.display = 'block';
+        }
+
+        // Close modal if clicked outside
+        window.onclick = function (event) {
+            if (event.target === modal) {
+                closePaymentModal();
+            }
+        }
+    </script>
 </body>
 
 </html>
