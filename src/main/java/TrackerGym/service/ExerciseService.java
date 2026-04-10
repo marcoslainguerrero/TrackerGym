@@ -15,7 +15,8 @@ public class ExerciseService {
     @Autowired
     private ExerciseRepository exerciseRepository;
 
-    public Exercise crearEjercicio(User usuario, String nombreEjercicio, LocalDate fecha, Integer series, Integer repeticiones, String notas) {
+    public Exercise crearEjercicio(User usuario, String nombreEjercicio, LocalDate fecha, Integer series,
+            Integer repeticiones, String notas) {
         Exercise exercise = new Exercise();
         exercise.setUsuario(usuario);
         exercise.setNombreEjercicio(nombreEjercicio);
@@ -23,7 +24,7 @@ public class ExerciseService {
         exercise.setSeries(series);
         exercise.setRepeticiones(repeticiones);
         exercise.setNotas(notas);
-        
+
         return exerciseRepository.save(exercise);
     }
 
@@ -35,7 +36,8 @@ public class ExerciseService {
         exerciseRepository.deleteById(ejercicioId);
     }
 
-    public Exercise actualizarEjercicio(Long ejercicioId, String nombreEjercicio, LocalDate fecha, Integer series, Integer repeticiones, String notas) {
+    public Exercise actualizarEjercicio(Long ejercicioId, String nombreEjercicio, LocalDate fecha, Integer series,
+            Integer repeticiones, String notas) {
         Exercise exercise = exerciseRepository.findById(ejercicioId).orElse(null);
         if (exercise != null) {
             exercise.setNombreEjercicio(nombreEjercicio);
