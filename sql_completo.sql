@@ -1,3 +1,5 @@
+--  ACTUALIZADO A 28-03
+
 -- 1. Reinicio total de la base de datos
 DROP DATABASE IF EXISTS gimnasio_db;
 CREATE DATABASE gimnasio_db;
@@ -99,3 +101,4 @@ JOIN roles r ON ur.role_id = r.id;
 
 SELECT * FROM usuarios;
 SELECT * FROM ejercicio;
+select * from notificacion_cambio;
