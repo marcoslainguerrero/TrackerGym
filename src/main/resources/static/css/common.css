@@ -367,3 +367,10 @@ a {
         grid-template-columns: 1fr !important
     }
 }
+
+.nav-logo {
+    height: 45px;
+    width: auto;
+    vertical-align: middle;
+    margin-right: 8px;
+}
