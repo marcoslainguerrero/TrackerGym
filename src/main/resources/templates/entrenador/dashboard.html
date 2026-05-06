@@ -15,17 +15,18 @@
 
     <aside class="sidebar">
         <div class="logo">
-            <img th:src="@{/img/logosintexto.svg}" alt="Logo" class="sidebar-logo">
-            <h2>TrackerGym</h2>
+            <a th:href="@{/home}" class="brand-link">
+                <img th:src="@{/img/logosintexto.svg}" alt="Logo" class="sidebar-logo">
+                <h2>TrackerGym</h2>
+            </a>
         </div>
         <div class="user-badge">
             <span>Conectado como</span>
             <strong th:text="${#authentication.name}">Entrenador</strong>
         </div>
         <ul class="nav-menu">
-            <li><a th:href="@{/entrenador/dashboard}" class="active">📊 Dashboard</a></li>
-            <li><a th:href="@{/entrenador/clientes}">👤 Mis Clientes</a></li>
-            <li><a th:href="@{/entrenador/clientes/nuevo}">➕ Registrar Cliente</a></li>
+            <li><a th:href="@{/entrenador/dashboard}" class="active">Dashboard</a></li>
+            <li><a th:href="@{/entrenador/clientes}">Mis Clientes</a></li>
         </ul>
         <div class="sidebar-footer">
             <form th:action="@{/logout}" method="post">
@@ -36,7 +37,9 @@
 
     <main class="main">
         <div class="page-header">
-            <h1>📊 Dashboard del Entrenador</h1>
+            <h1><img th:src="@{/img/dashboard.svg}" alt="Dashboard"
+                    style="width: 1.5em; height: 1.5em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;">
+                Dashboard del Entrenador</h1>
             <p>Monitorea el progreso de tus clientes</p>
         </div>
 
@@ -59,20 +62,21 @@
         </div>
 
         <!-- Client Cards -->
-        <h2 th:if="${!clientes.isEmpty()}" style="color: var(--primary); margin-bottom: 20px;">👥 Mis Clientes Activos
+        <h2 th:if="${!clientes.isEmpty()}" style="color: var(--primary); margin-bottom: 20px;"><img
+                th:src="@{/img/user.svg}" alt="Clientes"
+                style="width: 1.3em; height: 1.3em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;">
+            Mis Clientes Activos
         </h2>
 
         <div th:if="${clientes.isEmpty()}" class="empty-state">
-            <div class="icon">👤</div>
-            <h3>Aún no tienes clientes</h3>
-            <p>Comienza registrando clientes para monitorear su progreso.</p>
-            <a th:href="@{/entrenador/clientes/nuevo}" class="btn btn-primary">➕ Agregar Cliente</a>
+            <div class="icon"><img th:src="@{/img/user.svg}" alt="Sin clientes" style="width: 64px; height: 64px;">
+            </div>
+            <h3>Aún no tienes clientes.</h3>
         </div>
 
         <div class="clients-grid" th:if="${!clientes.isEmpty()}">
             <div class="client-card" th:each="cliente : ${clientes}">
                 <div class="header">
-                    <div class="avatar">👤</div>
                     <div>
                         <h3 th:text="${cliente.username}">Cliente</h3>
                         <small>Cliente activo</small>
@@ -91,11 +95,66 @@
                         <span>Última Sesión</span>
                         <span style="color: #999;">Sin registros</span>
                     </div>
+                    <div class="client-stat-row" th:if="${diasRestantes.containsKey(cliente.id)}"
+                        style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #eee;">
+                        <span>Días Restantes del Plan</span>
+                        <span style="color: var(--primary); font-weight: bold;"
+                            th:text="${diasRestantes.get(cliente.id)} + ' días'">30 días</span>
+                    </div>
                 </div>
                 <div class="footer">
                     <a th:href="@{/entrenador/ver-cliente/{id}(id=${cliente.id})}"
-                        class="btn btn-primary btn-sm btn-block">📈 Ver Progreso</a>
+                        class="btn btn-primary btn-sm btn-block"><img th:src="@{/img/estadistic.svg}" alt="Progreso"
+                            style="width: 1.8em; height: 1.8em; vertical-align: text-bottom; margin-right: 4px;"> Ver
+                        Progreso</a>
                 </div>
+            </div>
+        </div>
+
+        <!-- Histórico de Clientes -->
+        <div class="section-card" style="margin-top: 32px;">
+            <h2 style="color: var(--primary); margin-bottom: 20px;"><img th:src="@{/img/historial.svg}" alt="Histórico"
+                    style="width: 1.3em; height: 1.3em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;">
+                Histórico de Clientes</h2>
+
+            <div th:if="${historicoClientes != null and !historicoClientes.isEmpty()}" class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="contrato : ${historicoClientes}">
+                            <td>
+                                <div class="cell-name">
+                                    <div class="avatar-circle"
+                                        th:text="${#strings.toUpperCase(#strings.substring(contrato.cliente.username, 0, 1))}">
+                                        C
+                                    </div>
+                                    <span th:text="${contrato.cliente.username}">Cliente</span>
+                                </div>
+                            </td>
+                            <td th:text="${#temporals.format(contrato.fechaInicio, 'dd/MM/yyyy')}">01/01/2026</td>
+                            <td th:text="${#temporals.format(contrato.fechaFin, 'dd/MM/yyyy')}">01/02/2026</td>
+                            <td>
+                                <span th:if="${!contrato.fechaFin.isBefore(T(java.time.LocalDate).now())}"
+                                    class="badge-activo">Activo</span>
+                                <span th:if="${contrato.fechaFin.isBefore(T(java.time.LocalDate).now())}"
+                                    class="badge-expirado">Expirado</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${historicoClientes == null or historicoClientes.isEmpty()}" class="empty-state"
+                style="padding: 24px 20px;">
+                <h3>Todavía no has tenido clientes</h3>
+                <p>Cuando un cliente contrate tus servicios, aparecerá aquí.</p>
             </div>
         </div>
     </main>

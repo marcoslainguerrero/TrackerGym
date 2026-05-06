@@ -47,3 +47,102 @@
         grid-template-columns: 1fr
     }
 }
+
+/* ===== TABLE (Histórico de Contrataciones) ===== */
+.table-wrap {
+    background: var(--white);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse
+}
+
+.data-table thead {
+    background: linear-gradient(135deg, var(--primary), var(--secondary));
+    color: var(--white)
+}
+
+.data-table th {
+    padding: 14px 18px;
+    text-align: left;
+    font-weight: 600;
+    font-size: 13px
+}
+
+.data-table td {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--light);
+    font-size: 14px
+}
+
+.data-table tbody tr {
+    transition: background .2s
+}
+
+.data-table tbody tr:hover {
+    background: var(--lighter)
+}
+
+.data-table tbody tr:last-child td {
+    border-bottom: none
+}
+
+.cell-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 600;
+    color: var(--primary)
+}
+
+.avatar-circle {
+    width: 38px;
+    height: 38px;
+    background: linear-gradient(135deg, var(--accent), var(--accent-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 700;
+    font-size: 16px;
+    flex-shrink: 0;
+}
+
+/* ===== BADGES ===== */
+.badge-activo {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.badge-expirado {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    background: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef9a9a;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    .data-table {
+        font-size: 13px
+    }
+
+    .data-table th,
+    .data-table td {
+        padding: 10px 12px
+    }
+}

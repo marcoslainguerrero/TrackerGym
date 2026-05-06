@@ -5,11 +5,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
+    <style>
+        /* Alerta de error con icono — igual que en register */
+        .alert-error {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .alert-error::before {
+            content: "⚠";
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+    </style>
 </head>
 
 <body class="auth-page">
+
+    <!-- ===== NAVBAR (same as landing) ===== -->
+    <nav class="lp-navbar lp-navbar-auth" id="lp-navbar">
+        <a th:href="@{/}" class="lp-brand">
+            <span class="lp-brand-name">TrackerGym</span>
+        </a>
+        <div class="lp-nav-actions">
+            <a th:href="@{/}" class="lp-btn-ghost">Volver al Inicio</a>
+            <a th:href="@{/register}" class="lp-btn-cta">Registrarse Gratis</a>
+        </div>
+    </nav>
+
     <div class="auth-card">
         <div class="auth-logo">
             <img th:src="@{/img/logosvg.svg}" alt="TrackerGym Logos" class="logo-img">
@@ -17,11 +45,11 @@
         </div>
 
         <div th:if="${param.error}" class="alert alert-error">
-            ❌ Usuario o contraseña incorrectos
+            Usuario o contraseña incorrectos.
         </div>
 
         <div th:if="${param.success}" class="alert alert-success">
-            ✅ ¡Registro exitoso! Inicia sesión con tus credenciales.
+            ¡Registro exitoso! Inicia sesión con tus credenciales.
         </div>
 
         <form th:action="@{/login}" method="post">
@@ -37,7 +65,8 @@
                     <input type="password" id="password" name="password" placeholder="Tu contraseña" required
                         autocomplete="current-password">
                     <button type="button" class="toggle-password" onclick="togglePassword()">
-                        <span id="toggleIcon">👁️</span>
+                        <img id="toggleIcon" th:src="@{/img/ojocerrado.svg}" alt="Mostrar/Ocultar"
+                            style="width: 20px; height: 20px;">
                     </button>
                 </div>
             </div>
@@ -56,10 +85,10 @@
             const icon = document.getElementById('toggleIcon');
             if (input.type === 'password') {
                 input.type = 'text';
-                icon.textContent = '🙈';
+                icon.src = '/img/ojoabierto.svg';
             } else {
                 input.type = 'password';
-                icon.textContent = '👁️';
+                icon.src = '/img/ojocerrado.svg';
             }
         }
     </script>

@@ -27,7 +27,7 @@ public class Ejercicio {
     @OneToMany(mappedBy = "ejercicio")
     private Set<SerieRealizada> series = new HashSet<>();
 
-    // Getters and Setters
+    // Getters y Setters
     public Long getId() {
         return id;
     }

@@ -152,7 +152,30 @@
 }
 
 .client-card .footer .btn {
-    width: 100%
+    width: 100%;
+}
+
+.client-card .body {
+    padding: 16px 20px;
+}
+
+.client-stat-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid var(--light);
+    font-size: 13px;
+}
+
+.client-stat-row:last-child {
+    border-bottom: none;
+}
+
+.client-stat-row .val {
+    font-weight: 700;
+    color: var(--accent);
+    font-size: 16px;
 }
 
 /* ===== MODAL ===== */

@@ -5,17 +5,115 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registro - TrackerGym</title>
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
+    <style>
+        /* ── Requisitos de contraseña ── */
+        .password-requirements {
+            margin-top: 4px;
+            padding: 6px 8px;
+            background: rgba(0, 0, 0, 0.04);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 6px;
+            font-size: 0.75rem;
+        }
+
+        .password-requirements p {
+            margin: 0 0 2px;
+            font-weight: 600;
+            color: #1a1a2e;
+            letter-spacing: 0.02em;
+        }
+        
+        .req-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 1px 0;
+            color: #f87171;          /* rojo por defecto */
+            transition: color 0.25s ease;
+        }
+
+        .req-item.valid {
+            color: #4ade80;          /* verde al cumplirse */
+        }
+
+        .req-item .req-icon {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            border: 2px solid currentColor;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 0.65rem;
+            font-weight: 700;
+            transition: background 0.25s ease, border-color 0.25s ease;
+        }
+
+        .req-item.valid .req-icon {
+            background: #4ade80;
+            border-color: #4ade80;
+            color: #0a0a0a;
+        }
+
+        /* Barra de fuerza */
+        .strength-bar-wrap {
+            display: flex;
+            gap: 4px;
+            margin-top: 10px;
+        }
+
+        .strength-segment {
+            flex: 1;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(255, 255, 255, 0.12);
+            transition: background 0.3s ease;
+        }
+
+        .strength-segment.active-weak   { background: #f87171; }
+        .strength-segment.active-medium { background: #fbbf24; }
+        .strength-segment.active-strong { background: #4ade80; }
+
+        /* Alerta de error con icono */
+        .alert-error {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .alert-error::before {
+            content: "⚠";
+            font-size: 1.1rem;
+            flex-shrink: 0;
+            margin-top: 1px;
+        }
+    </style>
 </head>
 
 <body class="auth-page">
+
+    <!-- ===== NAVBAR (same as landing) ===== -->
+    <nav class="lp-navbar lp-navbar-auth" id="lp-navbar">
+        <a th:href="@{/}" class="lp-brand">
+            <span class="lp-brand-name">TrackerGym</span>
+        </a>
+        <div class="lp-nav-actions">
+            <a th:href="@{/}" class="lp-btn-ghost">Volver al Inicio</a>
+            <a th:href="@{/login}" class="lp-btn-cta">Iniciar Sesión</a>
+        </div>
+    </nav>
+
     <div class="auth-card">
         <div class="auth-logo">
             <img th:src="@{/img/logosvg.svg}" alt="TrackerGym Logos" class="logo-img">
             <p>Crea tu cuenta</p>
         </div>
 
+        <!-- Mensaje de error del servidor -->
         <div th:if="${param.error}" class="alert alert-error">
             <span th:text="${param.error}">Error</span>
         </div>
@@ -24,7 +122,7 @@
             Usuario registrado exitosamente. Por favor inicia sesión.
         </div>
 
-        <form th:action="@{/register}" method="post">
+        <form th:action="@{/register}" method="post" id="registerForm">
             <div class="form-group">
                 <label for="username">Usuario</label>
                 <input type="text" id="username" name="username" required placeholder="Nombre de usuario">
@@ -32,7 +130,37 @@
 
             <div class="form-group">
                 <label for="password">Contraseña</label>
-                <input type="password" id="password" name="password" required placeholder="Contraseña">
+                <input type="password" id="password" name="password" required placeholder="Contraseña"
+                       oninput="checkPasswordStrength(this.value)">
+
+                <!-- Barra de fuerza -->
+                <div class="strength-bar-wrap">
+                    <div class="strength-segment" id="seg1"></div>
+                    <div class="strength-segment" id="seg2"></div>
+                    <div class="strength-segment" id="seg3"></div>
+                    <div class="strength-segment" id="seg4"></div>
+                </div>
+
+                <!-- Requisitos -->
+                <div class="password-requirements">
+                    <p>Requisitos de la contraseña:</p>
+                    <div class="req-item" id="req-length">
+                        <span class="req-icon" id="icon-length">✗</span>
+                        <span>Más de 8 caracteres</span>
+                    </div>
+                    <div class="req-item" id="req-upper">
+                        <span class="req-icon" id="icon-upper">✗</span>
+                        <span>Al menos una letra mayúscula</span>
+                    </div>
+                    <div class="req-item" id="req-number">
+                        <span class="req-icon" id="icon-number">✗</span>
+                        <span>Al menos un número</span>
+                    </div>
+                    <div class="req-item" id="req-special">
+                        <span class="req-icon" id="icon-special">✗</span>
+                        <span>Al menos un carácter especial (!@#$%^&amp;*...)</span>
+                    </div>
+                </div>
             </div>
 
             <div class="form-group">
@@ -57,6 +185,45 @@
             ¿Ya tienes cuenta? <a th:href="@{/login}">Inicia sesión</a>
         </div>
     </div>
+
+    <script>
+        const rules = [
+            { id: 'req-length',  iconId: 'icon-length',  test: p => p.length > 8 },
+            { id: 'req-upper',   iconId: 'icon-upper',   test: p => /[A-Z]/.test(p) },
+            { id: 'req-number',  iconId: 'icon-number',  test: p => /[0-9]/.test(p) },
+            { id: 'req-special', iconId: 'icon-special', test: p => /[!@#$%^&*()+=[\]{};:'",.<>?/\\|`~_-]/.test(p) }
+        ];
+
+        const segments = [
+            document.getElementById('seg1'),
+            document.getElementById('seg2'),
+            document.getElementById('seg3'),
+            document.getElementById('seg4')
+        ];
+
+        function checkPasswordStrength(password) {
+            let passed = 0;
+
+            rules.forEach(rule => {
+                const el   = document.getElementById(rule.id);
+                const icon = document.getElementById(rule.iconId);
+                const ok   = rule.test(password);
+                el.classList.toggle('valid', ok);
+                icon.textContent = ok ? '✓' : '✗';
+                if (ok) passed++;
+            });
+
+            // Actualizar barra de fuerza
+            const colorClass = passed <= 1 ? 'active-weak'
+                             : passed <= 3 ? 'active-medium'
+                             :               'active-strong';
+
+            segments.forEach((seg, i) => {
+                seg.className = 'strength-segment';
+                if (i < passed) seg.classList.add(colorClass);
+            });
+        }
+    </script>
 </body>
 
 </html>

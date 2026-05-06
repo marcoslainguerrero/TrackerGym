@@ -13,7 +13,9 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><img th:src="@{/img/logosintexto.svg}" alt="Logo" class="nav-logo"> TrackerGym</div>
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link"
+                    style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">TrackerGym</a>
+            </div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}" class="active">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -21,10 +23,14 @@
                 <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
-                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img
+                            th:src="@{/img/notification.svg}" alt="Notificaciones"
+                            style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;">
+                        Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
+                            th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
-                <span>Bienvenido, <strong th:text="${#authentication.name}"></strong></span>
+                <strong th:text="${#authentication.name}"></strong>
                 <form th:action="@{/logout}" method="post" style="margin:0">
                     <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
                 </form>
@@ -34,7 +40,9 @@
 
     <div class="content-wrap">
         <div class="page-header">
-            <h1>📊 Mi Dashboard</h1>
+            <h1><img th:src="@{/img/dashboard.svg}" alt="Dashboard"
+                    style="width: 1.5em; height: 1.5em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;">
+                Mi Dashboard</h1>
             <p>Resumen de tu actividad de entrenamiento</p>
         </div>
 
@@ -57,11 +65,68 @@
         </div>
 
         <div class="section-card">
-            <h2>🚀 Acciones Rápidas</h2>
+            <h2><img th:src="@{/img/rocket.svg}" alt="Acciones Rápidas"
+                    style="width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 8px;"> Acciones
+                Rápidas</h2>
             <div class="stats-row">
-                <a th:href="@{/cliente/ejercicios}" class="btn btn-primary">📋 Ver Ejercicios</a>
-                <a th:href="@{/cliente/agregar-serie}" class="btn btn-primary">➕ Agregar Serie</a>
-                <a th:href="@{/cliente/historial}" class="btn btn-secondary">📊 Ver Historial</a>
+                <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary"><img th:src="@{/img/listlogo.svg}"
+                        alt="Ejercicios"
+                        style="width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 4px;"> Ver
+                    Ejercicios</a>
+                <a th:href="@{/cliente/agregar-serie}" class="btn btn-secondary"><img th:src="@{/img/addserie.svg}"
+                        alt="Agregar Serie"
+                        style="width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 4px;"> Agregar
+                    Serie</a>
+                <a th:href="@{/cliente/historial}" class="btn btn-secondary"><img th:src="@{/img/historial.svg}"
+                        alt="Historial" style="width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 4px;">
+                    Ver Historial</a>
+            </div>
+        </div>
+
+        <!-- Histórico de Contrataciones -->
+        <div class="section-card">
+            <h2><img th:src="@{/img/user.svg}" alt="Histórico"
+                    style="width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 8px;"> Histórico de
+                Entrenadores</h2>
+
+            <div th:if="${historicoContrataciones != null and !historicoContrataciones.isEmpty()}" class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Entrenador</th>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin</th>
+                            <th>Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="contrato : ${historicoContrataciones}">
+                            <td>
+                                <div class="cell-name">
+                                    <div class="avatar-circle"
+                                        th:text="${#strings.toUpperCase(#strings.substring(contrato.entrenador.username, 0, 1))}">
+                                        E
+                                    </div>
+                                    <span th:text="${contrato.entrenador.username}">Entrenador</span>
+                                </div>
+                            </td>
+                            <td th:text="${#temporals.format(contrato.fechaInicio, 'dd/MM/yyyy')}">01/01/2026</td>
+                            <td th:text="${#temporals.format(contrato.fechaFin, 'dd/MM/yyyy')}">01/02/2026</td>
+                            <td>
+                                <span th:if="${!contrato.fechaFin.isBefore(T(java.time.LocalDate).now())}"
+                                    class="badge-activo">Activo</span>
+                                <span th:if="${contrato.fechaFin.isBefore(T(java.time.LocalDate).now())}"
+                                    class="badge-expirado">Expirado</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div th:if="${historicoContrataciones == null or historicoContrataciones.isEmpty()}" class="empty-state"
+                style="padding: 24px 20px;">
+                <h3>Todavía no has contratado ningún entrenador</h3>
+                <p>Cuando contrates un entrenador, aparecerá aquí.</p>
             </div>
         </div>
     </div>

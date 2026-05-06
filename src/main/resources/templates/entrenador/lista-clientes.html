@@ -15,17 +15,18 @@
 
     <aside class="sidebar">
         <div class="logo">
-            <img th:src="@{/img/logosintexto.svg}" alt="Logo" class="sidebar-logo">
-            <h2>TrackerGym</h2>
+            <a th:href="@{/home}" class="brand-link">
+                <img th:src="@{/img/logosintexto.svg}" alt="Logo" class="sidebar-logo">
+                <h2>TrackerGym</h2>
+            </a>
         </div>
         <div class="user-badge">
             <span>Conectado como</span>
             <strong th:text="${#authentication.name}">Entrenador</strong>
         </div>
         <ul class="nav-menu">
-            <li><a th:href="@{/entrenador/dashboard}">📊 Dashboard</a></li>
-            <li><a th:href="@{/entrenador/clientes}" class="active">👤 Mis Clientes</a></li>
-            <li><a th:href="@{/entrenador/clientes/nuevo}">➕ Registrar Cliente</a></li>
+            <li><a th:href="@{/entrenador/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/entrenador/clientes}" class="active">Mis Clientes</a></li>
         </ul>
         <div class="sidebar-footer">
             <form th:action="@{/logout}" method="post">
@@ -37,10 +38,9 @@
     <main class="main">
         <div class="header-bar">
             <div class="page-header">
-                <h1>👥 Mis Clientes</h1>
+                <h1><img th:src="@{/img/user.svg}" alt="Clientes" style="width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 8px;"> Mis Clientes</h1>
                 <p>Gestiona y monitorea el progreso de tus clientes</p>
             </div>
-            <a th:href="@{/entrenador/clientes/nuevo}" class="btn btn-primary">➕ Registrar Nuevo Cliente</a>
         </div>
 
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
@@ -50,9 +50,11 @@
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>👤 Cliente</th>
-                        <th>👨‍🏫 Entrenador</th>
-                        <th>⚙️ Acciones</th>
+                        <th>Cliente</th>
+                        <th>Entrenador</th>
+                        <th>Plan Contratado</th>
+                        <th>Finaliza</th>
+                        <th>Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,9 +69,11 @@
                         </td>
                         <td th:text="${cliente.entrenador != null ? cliente.entrenador.username : 'Sin asignar'}">Sin
                             asignar</td>
+                        <td th:text="${contratosActivos.containsKey(cliente.id) ? 'Plan Premium' : 'Ninguno'}">Ninguno</td>
+                        <td th:text="${contratosActivos.containsKey(cliente.id) ? #temporals.format(contratosActivos.get(cliente.id).fechaFin, 'dd/MM/yyyy') : '-'}">-</td>
                         <td>
                             <a th:href="@{/entrenador/ver-cliente/{id}(id=${cliente.id})}"
-                                class="btn btn-primary btn-sm">📈 Ver Progreso</a>
+                                class="btn btn-primary btn-sm"><img th:src="@{/img/historial.svg}" alt="Progreso" style="width: 1.8em; height: 1.8em; vertical-align: text-bottom; margin-right: 4px;"> Ver Progreso</a>
                         </td>
                     </tr>
                 </tbody>
@@ -77,10 +81,9 @@
         </div>
 
         <div th:if="${clientes.isEmpty()}" class="empty-state">
-            <div class="icon">👤</div>
+            <div class="icon"><img th:src="@{/img/user.svg}" alt="Clientes" style="width: 48px; height: 48px;"></div>
             <h3>Aún no tienes clientes</h3>
-            <p>Registra tu primer cliente para comenzar a monitorear su progreso</p>
-            <a th:href="@{/entrenador/clientes/nuevo}" class="btn btn-primary">➕ Registrar Nuevo Cliente</a>
+            <p>Espera a que un cliente solicite tus servicios</p>
         </div>
     </main>
 

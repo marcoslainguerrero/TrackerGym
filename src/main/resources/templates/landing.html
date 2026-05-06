@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TrackerGym — Tu entrenamiento, bajo control</title>
+    <meta name="description"
+        content="TrackerGym es la app que te ayuda a registrar tus ejercicios, seguir tu progreso y alcanzar tus metas. Regístrate gratis y empieza hoy.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/landing.css}">
+</head>
+
+<body>
+
+    <!-- ===== NAVBAR ===== -->
+    <nav class="lp-navbar" id="lp-navbar">
+        <a th:href="@{/}" class="lp-brand">
+            <span class="lp-brand-name">TrackerGym</span>
+        </a>
+        <div class="lp-nav-actions">
+            <a th:href="@{/login}" class="lp-btn-ghost">Iniciar Sesión</a>
+            <a th:href="@{/register}" class="lp-btn-cta">Registrarse Gratis</a>
+        </div>
+    </nav>
+
+    <!-- ===== HERO ===== -->
+    <section class="lp-hero" id="inicio">
+        <div class="lp-hero-bg"></div>
+        <div class="lp-hero-content">
+            <div class="lp-hero-badge">
+                <span class="lp-hero-badge-dot"></span>
+                Comienza con un plan gratuito
+            </div>
+            <h1>
+                Tu entrenamiento,<br>
+                <span class="highlight">totalmente controlado.</span>
+            </h1>
+            <p>
+                Registra cada serie, sigue tu progreso y consigue tus metas.
+                TrackerGym es la plataforma que necesitas para llevar tu gym al siguiente nivel.
+            </p>
+            <div class="lp-hero-actions">
+                <a th:href="@{/register}" class="lp-btn-hero-primary" id="hero-cta-btn">
+                    Regístrate Gratis
+                    <span class="lp-arrow">→</span>
+                </a>
+                <a href="#caracteristicas" class="lp-btn-hero-secondary">
+                    Ver características
+                </a>
+            </div>
+
+            <!-- Stats -->
+            <div class="lp-stats">
+                <div class="lp-stat">
+                    <span class="lp-stat-num">∞</span>
+                    <span class="lp-stat-label">Ejercicios registrables</span>
+                </div>
+                <div class="lp-stat">
+                    <span class="lp-stat-num">100%</span>
+                    <span class="lp-stat-label">Gratuito</span>
+                </div>
+                <div class="lp-stat">
+                    <span class="lp-stat-num">2 roles</span>
+                    <span class="lp-stat-label">Cliente &amp; Entrenador</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CAROUSEL / SCREENSHOTS ===== -->
+    <section class="lp-screenshots" id="capturas">
+        <div class="lp-section-label lp-reveal">
+            <span class="lp-section-tag">Capturas de pantalla</span>
+            <h2>Descubre la experiencia</h2>
+            <p>Una interfaz limpia y pensada para que puedas enfocarte en lo que importa: entrenar.</p>
+        </div>
+
+        <div class="lp-carousel-wrapper lp-reveal">
+            <div class="lp-carousel-track-outer">
+                <div class="lp-carousel-track" id="carouselTrack">
+
+                    <!-- Slide 1 — Dashboard del cliente -->
+                    <div class="lp-carousel-slide">
+                        <div class="lp-slide-img-wrapper">
+                            <img th:src="@{/img/dashboardprincipal.png}" alt="Dashboard del cliente"
+                                class="lp-slide-img">
+                            <div class="lp-slide-caption">Interfaz Intuitiva</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 2 — Registro de ejercicios -->
+                    <div class="lp-carousel-slide">
+                        <div class="lp-slide-img-wrapper">
+                            <img th:src="@{/img/registroejercicios.png}" alt="Registro de ejercicios"
+                                class="lp-slide-img">
+                            <div class="lp-slide-caption">Añade tus ejercicios</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3 — Historial de entrenamientos -->
+                    <div class="lp-carousel-slide">
+                        <div class="lp-slide-img-wrapper">
+                            <img th:src="@{/img/historialentrenamientos.png}" alt="Historial de entrenamientos"
+                                class="lp-slide-img">
+                            <div class="lp-slide-caption">Controla tu progreso</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 4 — Sistema de notificaciones -->
+                    <div class="lp-carousel-slide">
+                        <div class="lp-slide-img-wrapper">
+                            <img th:src="@{/img/notificaciones.png}" alt="Sistema de notificaciones"
+                                class="lp-slide-img">
+                            <div class="lp-slide-caption">Recibe tus notificaciones</div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 5 — Monitorización de progreso -->
+                    <div class="lp-carousel-slide">
+                        <div class="lp-slide-img-wrapper">
+                            <img th:src="@{/img/sesiondehoy.png}" alt="Monitorización de progreso" class="lp-slide-img">
+                            <div class="lp-slide-caption">Monitorea tus clientes</div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <button class="lp-carousel-btn lp-carousel-prev" id="carouselPrev" aria-label="Anterior">&#8249;</button>
+            <button class="lp-carousel-btn lp-carousel-next" id="carouselNext" aria-label="Siguiente">&#8250;</button>
+
+            <div class="lp-carousel-dots" id="carouselDots"></div>
+        </div>
+    </section>
+
+    <!-- ===== FEATURES ===== -->
+    <section class="lp-features" id="caracteristicas">
+        <div class="lp-section-label lp-reveal" style="margin-bottom: 48px;">
+            <span class="lp-section-tag">Características</span>
+            <h2>Todo lo que necesitas para entrenar mejor</h2>
+            <p>Herramientas potentes, interfaz sencilla.</p>
+        </div>
+
+        <div class="lp-features-grid">
+
+            <div class="lp-feature-card lp-reveal">
+                <div class="lp-feature-icon">
+                    <img th:src="@{/img/pesa1.svg}" alt="Ejercicios">
+                </div>
+                <h3>Biblioteca de ejercicios</h3>
+                <p>Crea y gestiona tu propia biblioteca de ejercicios personalizados. Organiza por grupos musculares y
+                    ten todo a mano.</p>
+            </div>
+
+            <div class="lp-feature-card lp-reveal">
+                <div class="lp-feature-icon">
+                    <img th:src="@{/img/addserie.svg}" alt="Series">
+                </div>
+                <h3>Registro de series</h3>
+                <p>Anota cada serie con peso, repeticiones y notas. Lleva un control preciso de cada entrenamiento al
+                    detalle.</p>
+            </div>
+
+            <div class="lp-feature-card lp-reveal">
+                <div class="lp-feature-icon">
+                    <img th:src="@{/img/historial.svg}" alt="Historial">
+                </div>
+                <h3>Historial completo</h3>
+                <p>Consulta tus entrenamientos pasados en cualquier momento. Visualiza tu evolución y detecta patrones
+                    de progreso.</p>
+            </div>
+
+            <div class="lp-feature-card lp-reveal">
+                <div class="lp-feature-icon">
+                    <img th:src="@{/img/calendar.svg}" alt="Sesión de hoy">
+                </div>
+                <h3>Sesión de hoy</h3>
+                <p>Accede rápidamente a los ejercicios programados para hoy y registra tu entrenamiento en tiempo real.
+                </p>
+            </div>
+
+            <div class="lp-feature-card lp-reveal">
+                <div class="lp-feature-icon">
+                    <img th:src="@{/img/user.svg}" alt="Entrenador">
+                </div>
+                <h3>Contrata un entrenador</h3>
+                <p>Conecta con entrenadores profesionales. Tu entrenador podrá ver tu progreso y guiarte de forma
+                    personalizada.</p>
+            </div>
+
+            <div class="lp-feature-card lp-reveal">
+                <div class="lp-feature-icon">
+                    <img th:src="@{/img/estadistic.svg}" alt="Estadísticas">
+                </div>
+                <h3>Estadísticas del entrenador</h3>
+                <p>Los entrenadores disponen de un panel de estadísticas para analizar el rendimiento de todos sus
+                    clientes.</p>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- ===== HOW IT WORKS ===== -->
+    <section class="lp-how" id="como-funciona">
+        <div class="lp-section-label lp-reveal" style="margin-bottom: 56px;">
+            <span class="lp-section-tag">Cómo funciona</span>
+            <h2>Empieza en minutos</h2>
+            <p>Sin complicaciones. Sin configuraciones interminables.</p>
+        </div>
+
+        <div class="lp-steps">
+            <div class="lp-step lp-reveal">
+                <div class="lp-step-num">1</div>
+                <div class="lp-step-body">
+                    <h3>Crea tu cuenta gratuita</h3>
+                    <p>Regístrate en segundos eligiendo si eres cliente o entrenador. Sin tarjeta de crédito, sin
+                        compromisos.</p>
+                </div>
+            </div>
+            <div class="lp-step lp-reveal">
+                <div class="lp-step-num">2</div>
+                <div class="lp-step-body">
+                    <h3>Añade tus ejercicios</h3>
+                    <p>Crea tu biblioteca personal de ejercicios o usa los existentes. Organiza todo a tu manera.</p>
+                </div>
+            </div>
+            <div class="lp-step lp-reveal">
+                <div class="lp-step-num">3</div>
+                <div class="lp-step-body">
+                    <h3>Registra cada entrenamiento</h3>
+                    <p>Anota series, pesos y repeticiones de cada sesión. El historial se guarda automáticamente para
+                        que puedas revisarlo cuando quieras.</p>
+                </div>
+            </div>
+            <div class="lp-step lp-reveal">
+                <div class="lp-step-num">4</div>
+                <div class="lp-step-body">
+                    <h3>Sigue tu progreso</h3>
+                    <p>Consulta tu historial, analiza tu evolución y supérate cada semana. Conecta con un entrenador
+                        para ir más lejos.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== CTA FINAL ===== -->
+    <section class="lp-cta">
+        <div class="lp-cta-inner lp-reveal">
+            <h2>¿Listo para <span class="highlight">transformar</span> tu entrenamiento?</h2>
+            <p>Únete hoy. Es completamente gratis y estarás listo en menos de 2 minutos.</p>
+            <a th:href="@{/register}" class="lp-btn-hero-primary" id="cta-bottom-btn">
+                Regístrate Gratis
+                <span class="lp-arrow">→</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="lp-footer">
+        <a th:href="@{/}" class="lp-footer-brand">
+            <span>TrackerGym</span>
+        </a>
+        <span class="lp-footer-copy">&copy; 2026 TrackerGym. Todos los derechos reservados.</span>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+        // ----- Navbar scroll effect -----
+        const navbar = document.getElementById('lp-navbar');
+        window.addEventListener('scroll', () => {
+            navbar.classList.toggle('scrolled', window.scrollY > 40);
+        });
+
+        // ----- Carousel -----
+        const track = document.getElementById('carouselTrack');
+        const slides = track.querySelectorAll('.lp-carousel-slide');
+        const dotsContainer = document.getElementById('carouselDots');
+        const prevBtn = document.getElementById('carouselPrev');
+        const nextBtn = document.getElementById('carouselNext');
+        let current = 0;
+        let autoTimer;
+
+        // Build dots
+        slides.forEach((_, i) => {
+            const dot = document.createElement('button');
+            dot.className = 'lp-dot' + (i === 0 ? ' active' : '');
+            dot.setAttribute('aria-label', 'Ir a captura ' + (i + 1));
+            dot.addEventListener('click', () => goTo(i));
+            dotsContainer.appendChild(dot);
+        });
+
+        function updateDots() {
+            dotsContainer.querySelectorAll('.lp-dot').forEach((d, i) => {
+                d.classList.toggle('active', i === current);
+            });
+        }
+
+        function goTo(index) {
+            current = (index + slides.length) % slides.length;
+            track.style.transform = `translateX(-${current * 100}%)`;
+            updateDots();
+        }
+
+        function next() { goTo(current + 1); }
+        function prev() { goTo(current - 1); }
+
+        prevBtn.addEventListener('click', () => { prev(); resetAuto(); });
+        nextBtn.addEventListener('click', () => { next(); resetAuto(); });
+
+        // Touch / swipe support
+        let touchStartX = 0;
+        track.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+        track.addEventListener('touchend', e => {
+            const diff = touchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) { diff > 0 ? next() : prev(); resetAuto(); }
+        });
+
+        // Auto-advance every 5s
+        function startAuto() {
+            autoTimer = setInterval(next, 5000);
+        }
+        function resetAuto() {
+            clearInterval(autoTimer);
+            startAuto();
+        }
+        startAuto();
+
+        // ----- Scroll reveal -----
+        const revealEls = document.querySelectorAll('.lp-reveal');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+
+        revealEls.forEach(el => observer.observe(el));
+    </script>
+
+</body>
+
+</html>

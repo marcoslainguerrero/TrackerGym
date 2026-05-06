@@ -13,7 +13,8 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><img th:src="@{/img/logosintexto.svg}" alt="Logo" class="nav-logo"> TrackerGym
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link"
+                    style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">TrackerGym</a>
             </div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
@@ -22,7 +23,11 @@
                 <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
-                <li><a th:href="@{/cliente/notificaciones}" class="active">🔔 Notificaciones</a></li>
+                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion active"><img
+                            th:src="@{/img/notification.svg}" alt="Notificaciones"
+                            style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;">
+                        Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
+                            th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
@@ -35,7 +40,9 @@
 
     <div class="content-wrap">
         <div class="page-header" style="text-align: center; margin-bottom: 40px;">
-            <h1>🔔 Historial de Notificaciones.</h1>
+            <h1><img th:src="@{/img/notification.svg}" alt="Notificaciones"
+                    style="width: 1em; height: 1em; vertical-align: middle; margin-right: 8px;"> Historial de
+                Notificaciones.</h1>
             <p style="color: var(--text-muted);">Registro de modificaciones realizadas por tu entrenador en tus series.
             </p>
         </div>

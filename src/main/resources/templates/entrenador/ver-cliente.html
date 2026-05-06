@@ -15,17 +15,18 @@
 
     <aside class="sidebar">
         <div class="logo">
-            <img th:src="@{/img/logosintexto.svg}" alt="Logo" class="sidebar-logo">
-            <h2>TrackerGym</h2>
+            <a th:href="@{/home}" class="brand-link">
+                <img th:src="@{/img/logosintexto.svg}" alt="Logo" class="sidebar-logo">
+                <h2>TrackerGym</h2>
+            </a>
         </div>
         <div class="user-badge">
             <span>Conectado como</span>
             <strong th:text="${#authentication.name}">Entrenador</strong>
         </div>
         <ul class="nav-menu">
-            <li><a th:href="@{/entrenador/dashboard}">📊 Dashboard</a></li>
-            <li><a th:href="@{/entrenador/clientes}">👤 Mis Clientes</a></li>
-            <li><a th:href="@{/entrenador/clientes/nuevo}">➕ Registrar Cliente</a></li>
+            <li><a th:href="@{/entrenador/dashboard}">Dashboard</a></li>
+            <li><a th:href="@{/entrenador/clientes}">Mis Clientes</a></li>
         </ul>
         <div class="sidebar-footer">
             <form th:action="@{/logout}" method="post">
@@ -43,13 +44,17 @@
 
         <!-- Client Header -->
         <div class="detail-header" th:if="${cliente}">
-            <h1 th:text="'📊 Progreso de ' + ${cliente.username}">Progreso del Cliente</h1>
+            <h1 th:text="'Progreso de ' + ${cliente.username}">Progreso del Cliente</h1>
             <p>Entrenador: <strong
                     th:text="${cliente.entrenador != null ? cliente.entrenador.username : 'Sin asignar'}"></strong></p>
         </div>
 
         <!-- Stats -->
         <div class="stats-row" th:if="${cliente}">
+            <div th:if="${tienePlan}" class="stat-card" style="border: 2px solid var(--primary-color);">
+                <div class="label">Días restantes del Plan</div>
+                <div class="number" th:text="${diasRestantesPlan} + ' días'">0 días</div>
+            </div>
             <div class="stat-card">
                 <div class="label">Total de Series</div>
                 <div class="number" th:text="${series.size()}">0</div>
@@ -67,17 +72,20 @@
 
         <!-- Series History -->
         <div class="section-card" th:if="${cliente}">
-            <h2>📋 Historial de Entrenamientos</h2>
+            <h2><img th:src="@{/img/calendar.svg}" alt="Historial"
+                    style="width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 8px;"> Historial de
+                Entrenamientos</h2>
 
             <div th:if="${#maps.isEmpty(seriesPorFecha)}" class="empty-state">
-                <div class="icon">📭</div>
                 <p>Este cliente aún no ha registrado ningún entrenamiento.</p>
             </div>
 
             <div th:each="fecha : ${seriesPorFecha.keySet()}">
                 <div class="date-badge">
-                    <span>📅 <span th:text="${#temporals.format(fecha, 'dd/MM/yyyy')}">Fecha</span></span>
-                    <span th:text="${seriesPorFecha.get(fecha).size()} + ' series'">series</span>
+                    <span><span th:text="${#temporals.format(fecha, 'dd/MM/yyyy')}">Fecha</span></span>
+                    <span
+                        th:text="|${seriesPorFecha.get(fecha).size()} ${seriesPorFecha.get(fecha).size() == 1 ? 'serie' : 'series'}|">1
+                        serie</span>
                 </div>
 
                 <div th:each="serie : ${seriesPorFecha.get(fecha)}">
@@ -89,19 +97,24 @@
                                 <span style="color: #999; font-weight: normal;"> — Serie <span
                                         th:text="${serie.numeroSerie}">1</span></span>
                             </h4>
-                            <div class="action-buttons">
+                            <div class="action-buttons" style="display: flex; align-items: center; gap: 8px;">
                                 <button class="btn-icon" title="Editar" th:data-id="${serie.id}"
                                     th:data-reps="${serie.repeticiones}"
                                     th:data-peso="${serie.peso != null ? serie.peso : ''}"
                                     th:data-notas="${serie.notas != null ? serie.notas : ''}"
-                                    onclick="openEditModal(this)">
-                                    ✏️
+                                    onclick="openEditModal(this)"
+                                    style="border: none; background: none; padding: 0; cursor: pointer; display: flex;">
+                                    <img th:src="@{/img/edit.svg}" alt="Editar"
+                                        style="width: 24px; height: 24px; vertical-align: middle;">
                                 </button>
                                 <form th:action="@{/entrenador/eliminar-serie/{id}(id=${serie.id})}" method="post"
                                     onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta serie?');"
-                                    style="display:inline;">
+                                    style="margin: 0; display: flex;">
                                     <button type="submit" class="btn-icon" title="Eliminar"
-                                        style="color: #e74c3c;">🗑️</button>
+                                        style="border: none; background: none; padding: 0; cursor: pointer; display: flex;">
+                                        <img th:src="@{/img/trash.svg}" alt="Eliminar"
+                                            style="width: 24px; height: 24px; vertical-align: middle;">
+                                    </button>
                                 </form>
                             </div>
                         </div>
@@ -119,20 +132,50 @@
 
         <!-- Other Clients -->
         <div class="section-card" th:if="${clientes != null and clientes.size() > 1}">
-            <h2>👥 Otros Clientes</h2>
+            <h2><img th:src="@{/img/planactivo.svg}" alt="Clientes"
+                    style="width: 1.8em; height: 1.8em; vertical-align: middle; margin-right: 8px;"> Otros Clientes</h2>
             <div class="clients-grid">
                 <div th:each="c : ${clientes}" th:if="${c.id != cliente.id}">
-                    <a th:href="@{/entrenador/ver-cliente/{id}(id=${c.id})}">
+                    <a th:href="@{/entrenador/ver-cliente/{id}(id=${c.id})}" style="text-decoration: none;">
                         <div class="client-card">
                             <div class="header">
-                                <div class="avatar">👤</div>
                                 <div>
                                     <h3 th:text="${c.username}">Cliente</h3>
-                                    <small>Series: <span th:text="${clienteSeries.get(c.id) ?: 0}">0</span></small>
+                                    <small>Cliente activo</small>
+                                </div>
+                            </div>
+                            <div class="body">
+                                <div class="client-stat-row">
+                                    <span>Series Registradas</span>
+                                    <span class="val" th:text="${clienteSeries.get(c.id) ?: 0}">0</span>
+                                </div>
+                                <div class="client-stat-row" th:if="${ultimoRegistro.get(c.id) != null}">
+                                    <span>Última Sesión</span>
+                                    <span
+                                        th:text="${#temporals.format(ultimoRegistro.get(c.id), 'dd/MM/yyyy')}">N/A</span>
+                                </div>
+                                <div class="client-stat-row" th:if="${ultimoRegistro.get(c.id) == null}">
+                                    <span>Última Sesión</span>
+                                    <span style="color: #999;">Sin registros</span>
+                                </div>
+                                <div class="client-stat-row" th:if="${diasRestantes.get(c.id) != null}"
+                                    style="margin-top: 2px; padding-top: 8px; border-top: 1px dashed #eee;">
+                                    <span>Días Restantes del Plan</span>
+                                    <span style="color: var(--primary); font-weight: bold;"
+                                        th:text="${diasRestantes.get(c.id)} + ' días'">Sin plan</span>
+                                </div>
+                                <div class="client-stat-row" th:if="${diasRestantes.get(c.id) == null}"
+                                    style="margin-top: 2px; padding-top: 8px; border-top: 1px dashed #eee;">
+                                    <span>Días Restantes del Plan</span>
+                                    <span style="color: #999;">Sin plan</span>
                                 </div>
                             </div>
                             <div class="footer">
-                                <span class="btn btn-primary btn-sm btn-block">📈 Ver progreso</span>
+                                <span class="btn btn-primary btn-sm btn-block">
+                                    <img th:src="@{/img/estadistic.svg}" alt="Progreso"
+                                        style="width: 1.2em; height: 1.2em; vertical-align: text-bottom; margin-right: 4px;">
+                                    Ver Progreso
+                                </span>
                             </div>
                         </div>
                     </a>

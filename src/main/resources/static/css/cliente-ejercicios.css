@@ -50,6 +50,14 @@
     margin-top: 14px;
 }
 
-.card-actions .btn {
-    flex: 1
+.card-actions .btn, .card-actions form {
+    flex: 1;
+}
+
+.card-actions form {
+    display: flex;
+}
+
+.card-actions form .btn {
+    width: 100%;
 }

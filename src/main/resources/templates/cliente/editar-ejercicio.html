@@ -13,7 +13,7 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><img th:src="@{/img/logosintexto.svg}" alt="Logo" class="nav-logo"> TrackerGym</div>
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link"><img th:src="@{/img/logosintexto.svg}" alt="Logo" class="nav-logo"> TrackerGym</a></div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -21,7 +21,7 @@
                 <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
-                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img th:src="@{/img/notification.svg}" alt="Notificaciones" style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;"> Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
@@ -54,18 +54,21 @@
                         <option value="Brazos" th:selected="${ejercicio.grupoMuscular == 'Brazos'}">Brazos</option>
                         <option value="Core" th:selected="${ejercicio.grupoMuscular == 'Core'}">Core</option>
                         <option value="Cardio" th:selected="${ejercicio.grupoMuscular == 'Cardio'}">Cardio</option>
-                        <option value="Cuerpo Completo" th:selected="${ejercicio.grupoMuscular == 'Cuerpo Completo'}">Cuerpo Completo</option>
+                        <option value="Cuerpo Completo" th:selected="${ejercicio.grupoMuscular == 'Cuerpo Completo'}">
+                            Cuerpo Completo</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label for="descripcion">Descripción / Notas adicionales</label>
-                    <textarea id="descripcion" name="descripcion" rows="4" th:text="${ejercicio.descripcion}"></textarea>
+                    <textarea id="descripcion" name="descripcion" rows="4"
+                        th:text="${ejercicio.descripcion}"></textarea>
                 </div>
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
-                    <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary btn-block" style="text-align: center;">Cancelar</a>
+                    <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary btn-block"
+                        style="text-align: center;">Cancelar</a>
                 </div>
             </form>
         </div>

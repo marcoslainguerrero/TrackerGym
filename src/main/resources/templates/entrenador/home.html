@@ -13,35 +13,23 @@
 <body>
 
     <aside class="sidebar">
-        <div class="logo-area">
-            <img th:src="@{/img/logosintexto.svg}" alt="Logo" class="sidebar-logo">
-            <h2>TrackerGym</h2>
+        <div class="logo">
+            <a th:href="@{/home}" class="brand-link">
+                <img th:src="@{/img/logosintexto.svg}" alt="Logo" class="sidebar-logo">
+                <h2>TrackerGym</h2>
+            </a>
         </div>
-        <div class="user-info">
-            <p>Conectado como:</p>
+        <div class="user-badge">
+            <span>Conectado como</span>
             <strong th:text="${#authentication.name}">Entrenador</strong>
         </div>
-
-        <nav class="menu">
-            <ul>
-                <li>
-                    <a th:href="@{/home}" class="active">🏠 Inicio</a>
-                </li>
-                <li>
-                    <a th:href="@{/entrenador/dashboard}">📊 Dashboard</a>
-                </li>
-                <li>
-                    <a th:href="@{/entrenador/clientes}">👤 Mis Clientes</a>
-                </li>
-                <li>
-                    <a href="#">📈 Reportes</a>
-                </li>
-            </ul>
-        </nav>
-
-        <div class="logout-area">
+        <ul class="nav-menu">
+            <li><a th:href="@{/home}" class="active">Dashboard</a></li>
+            <li><a th:href="@{/entrenador/clientes}">Mis Clientes</a></li>
+        </ul>
+        <div class="sidebar-footer">
             <form th:action="@{/logout}" method="post">
-                <button type="submit" class="btn-danger" style="width: 100%;">Cerrar Sesión</button>
+                <button type="submit" class="btn btn-danger btn-block">Cerrar Sesión</button>
             </form>
         </div>
     </aside>

@@ -13,7 +13,7 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><img th:src="@{/img/logosintexto.svg}" alt="Logo" class="nav-logo"> TrackerGym</div>
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link" style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">TrackerGym</a></div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -21,7 +21,11 @@
                 <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
-                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img
+                            th:src="@{/img/notification.svg}" alt="Notificaciones"
+                            style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;">
+                        Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
+                            th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
@@ -35,7 +39,9 @@
     <div class="content-wrap" style="max-width: 600px;">
         <div class="form-section">
             <div class="page-header" style="text-align:center">
-                <h1>➕ Agregar Nueva Serie</h1>
+                <h1><img th:src="@{/img/addserie.svg}" alt="Agregar"
+                        style="width: 1.5em; height: 1.5em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;"> Agregar Nueva Serie
+                </h1>
             </div>
 
             <div th:if="${param.error}" class="alert alert-error" th:text="${param.error}"></div>
@@ -80,7 +86,9 @@
                         placeholder="Ej: Sentí mucho esfuerzo en la serie 3..."></textarea>
                 </div>
 
-                <button type="submit" class="btn btn-primary btn-block">💾 Guardar Serie</button>
+                <button type="submit" class="btn btn-primary btn-block"><img th:src="@{/img/success..svg}" alt="Guardar"
+                        style="width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 4px;"> Guardar
+                    Serie</button>
             </form>
         </div>
     </div>

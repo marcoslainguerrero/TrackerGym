@@ -1,4 +1,6 @@
---  ACTUALIZADO A 28-03
+-- actualizado a 20-04
+
+
 
 -- 1. Reinicio total de la base de datos
 DROP DATABASE IF EXISTS gimnasio_db;
@@ -68,7 +70,18 @@ CREATE TABLE notificacion_cambio (
     CONSTRAINT fk_notif_entrenador FOREIGN KEY (entrenador_id) REFERENCES usuarios(id) ON DELETE CASCADE
 );
 
--- 6. Inserción de datos maestros
+-- 6. Nueva tabla: Contrato Entrenador (Para controlar el tiempo de duración)
+CREATE TABLE contrato_entrenador (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id BIGINT NOT NULL,
+    entrenador_id BIGINT NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    CONSTRAINT fk_contrato_cliente FOREIGN KEY (cliente_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+    CONSTRAINT fk_contrato_entrenador FOREIGN KEY (entrenador_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
+-- 7. Inserción de datos maestros
 
 -- Insertamos roles con el prefijo ROLE_ (estándar de Spring Security)
 INSERT INTO roles (id, name) VALUES (1, 'ROLE_ADMIN'), (2, 'ROLE_USER');
@@ -87,7 +100,6 @@ INSERT INTO ejercicio (nombre, descripcion, grupo_muscular) VALUES
 ('Peso Muerto', 'Levantamiento de peso muerto', 'Espalda'),
 ('Flexiones', 'Ejercicio de pecho con peso corporal', 'Pecho'),
 ('Dominadas', 'Ejercicio de espalda con peso corporal', 'Espalda'),
-('Fondos', 'Ejercicio de tríceps con peso corporal', 'Tríceps'),
 ('Polea al Pecho', 'Ejercicio de espalda con polea', 'Espalda'),
 ('Encogimiento de Hombros', 'Ejercicio de hombros con mancuernas', 'Hombros'),
 ('Curl de Bíceps', 'Ejercicio de bíceps con mancuernas', 'Bíceps'),
@@ -102,3 +114,4 @@ JOIN roles r ON ur.role_id = r.id;
 SELECT * FROM usuarios;
 SELECT * FROM ejercicio;
 select * from notificacion_cambio;
+select * from contrato_entrenador;

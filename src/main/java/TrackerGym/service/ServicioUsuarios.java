@@ -10,6 +10,10 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.time.LocalDate;
+import TrackerGym.entity.ContratoEntrenador;
+import TrackerGym.repository.ContratoEntrenadorRepository;
+import TrackerGym.service.NotificacionService;
 
 @Service
 public class ServicioUsuarios {
@@ -21,7 +25,61 @@ public class ServicioUsuarios {
     private RoleRepository roleRepository;
 
     @Autowired
+    private ContratoEntrenadorRepository contratoEntrenadorRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private NotificacionService notificacionService;
+
+    /**
+     * Valida que la contraseña cumpla los requisitos mínimos de seguridad:
+     * - Más de 8 caracteres
+     * - Al menos una letra mayúscula
+     * - Al menos un número
+     * - Al menos un carácter especial (!@#$%^&*()-+=[]{};:'",.<>?/\|`~_)
+     *
+     * @param password contraseña a validar
+     * @return mensaje de error si no cumple los requisitos, o null si es válida
+     */
+    public String validarPassword(String password) {
+        if (password == null || password.length() <= 8 ||
+            !password.matches(".*[A-Z].*") ||
+            !password.matches(".*[0-9].*") ||
+            !password.matches(".*[!@#$%^&*()\\-+=\\[\\]{};:'\",.<>?/\\\\|`~_].*")) {
+            return "Registro anulado. La contraseña no cumple con los requisitos";
+        }
+        return null;
+    }
+
+    public Optional<ContratoEntrenador> comprobarContratoActivo(User cliente) {
+        Optional<ContratoEntrenador> contratoOpt = contratoEntrenadorRepository
+                .findTopByClienteOrderByFechaFinDesc(cliente);
+        if (contratoOpt.isPresent()) {
+            ContratoEntrenador contrato = contratoOpt.get();
+            if (contrato.getFechaFin().isBefore(LocalDate.now())) {
+                User entrenador = contrato.getEntrenador();
+                String msj = "Tu plan de entrenamiento con "
+                        + (entrenador != null ? entrenador.getUsername() : "tu entrenador")
+                        + " ha expirado y ha sido cancelado automáticamente.";
+                try {
+                    if (entrenador != null) {
+                        notificacionService.crearNotificacion(cliente, entrenador, msj);
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                cliente.setEntrenador(null);
+                userRepository.save(cliente);
+                contratoEntrenadorRepository.delete(contrato);
+                return Optional.empty();
+            }
+            return contratoOpt;
+        }
+        return Optional.empty();
+    }
 
     public List<User> obtenerClientes() {
         return userRepository.findByEntrenadorIsNotNull();
@@ -66,8 +124,19 @@ public class ServicioUsuarios {
         Optional<User> entrenador = userRepository.findById(entrenadorId);
 
         if (cliente.isPresent() && entrenador.isPresent()) {
-            cliente.get().setEntrenador(entrenador.get());
-            return userRepository.save(cliente.get());
+            User clienteEntity = cliente.get();
+            User entrenadorEntity = entrenador.get();
+            clienteEntity.setEntrenador(entrenadorEntity);
+            User savedUser = userRepository.save(clienteEntity);
+
+            ContratoEntrenador contrato = new ContratoEntrenador();
+            contrato.setCliente(clienteEntity);
+            contrato.setEntrenador(entrenadorEntity);
+            contrato.setFechaInicio(LocalDate.now());
+            contrato.setFechaFin(LocalDate.now().plusMonths(1));
+            contratoEntrenadorRepository.save(contrato);
+
+            return savedUser;
         }
         return null;
     }
@@ -96,6 +165,13 @@ public class ServicioUsuarios {
         if (entrenadorOpt.isPresent()) {
             usuario.setEntrenador(entrenadorOpt.get());
             userRepository.save(usuario);
+
+            ContratoEntrenador contrato = new ContratoEntrenador();
+            contrato.setCliente(usuario);
+            contrato.setEntrenador(entrenadorOpt.get());
+            contrato.setFechaInicio(LocalDate.now());
+            contrato.setFechaFin(LocalDate.now().plusMonths(1));
+            contratoEntrenadorRepository.save(contrato);
         } else {
             throw new Exception("Entrenador no encontrado.");
         }

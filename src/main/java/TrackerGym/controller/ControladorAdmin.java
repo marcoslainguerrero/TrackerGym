@@ -16,9 +16,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.Optional;
 import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import TrackerGym.entity.ContratoEntrenador;
+import TrackerGym.repository.ContratoEntrenadorRepository;
 
 @Controller
 public class ControladorAdmin {
@@ -31,6 +36,9 @@ public class ControladorAdmin {
 
     @Autowired
     private SerieRealizadaService serieRealizadaService;
+
+    @Autowired
+    private ContratoEntrenadorRepository contratoEntrenadorRepository;
 
     /**
      * Gestiona la redirección inicial tras el login exitoso.
@@ -65,6 +73,21 @@ public class ControladorAdmin {
                         .filter(e -> e.getFecha() != null && YearMonth.from(e.getFecha()).equals(mesActual))
                         .count();
 
+                Optional<ContratoEntrenador> contratoOpt = servicioUsuarios.comprobarContratoActivo(usuario.get());
+                if (contratoOpt.isPresent()) {
+                    ContratoEntrenador contrato = contratoOpt.get();
+                    long diasRestantes = ChronoUnit.DAYS.between(LocalDate.now(), contrato.getFechaFin());
+                    model.addAttribute("tienePlan", true);
+                    model.addAttribute("diasRestantesPlan", diasRestantes > 0 ? diasRestantes : 0);
+                    model.addAttribute("fechaFinPlan", contrato.getFechaFin());
+                } else {
+                    model.addAttribute("tienePlan", false);
+                }
+
+                // Histórico de contrataciones del cliente
+                List<ContratoEntrenador> historicoContrataciones = contratoEntrenadorRepository.findByClienteOrderByFechaInicioDesc(usuario.get());
+                model.addAttribute("historicoContrataciones", historicoContrataciones);
+
                 model.addAttribute("ejercicios", ejercicios);
                 model.addAttribute("ejercicioPorFecha", ejercicios);
                 model.addAttribute("diasActivos", diasActivos);
@@ -76,6 +99,8 @@ public class ControladorAdmin {
             model.addAttribute("ejercicioPorFecha", new java.util.ArrayList<>());
             model.addAttribute("diasActivos", 0);
             model.addAttribute("ejerciciosMesActual", 0);
+            model.addAttribute("tienePlan", false);
+            model.addAttribute("historicoContrataciones", new java.util.ArrayList<>());
         }
 
         return "cliente/dashboard"; // Panel de cliente
@@ -89,41 +114,25 @@ public class ControladorAdmin {
         Optional<User> entrenadorActivo = userRepository.findByUsername(auth.getName());
         
         if (entrenadorActivo.isPresent()) {
-            // Buscamos únicamente los clientes que pertenezcan a este entrenador
             List<User> clientes = userRepository.findByEntrenador(entrenadorActivo.get());
+            Map<Long, ContratoEntrenador> contratosActivos = new java.util.HashMap<>();
+            
+            for (User cliente : clientes) {
+                Optional<ContratoEntrenador> contratoOpt = servicioUsuarios.comprobarContratoActivo(cliente);
+                contratoOpt.ifPresent(c -> contratosActivos.put(cliente.getId(), c));
+            }
+            
+            // Volver a cargar por si alguno fue desvinculado automáticamente
+            clientes = userRepository.findByEntrenador(entrenadorActivo.get());
+            
             model.addAttribute("clientes", clientes);
+            model.addAttribute("contratosActivos", contratosActivos);
         } else {
             model.addAttribute("clientes", new java.util.ArrayList<>());
+            model.addAttribute("contratosActivos", new java.util.HashMap<>());
         }
 
-        return "entrenador/lista-clientes"; // Retorna templates/entrenador/lista-clientes.html
-    }
-
-    /**
-     * Muestra el formulario para registrar un nuevo cliente.
-     */
-    @GetMapping("/entrenador/clientes/nuevo")
-    public String mostrarFormularioRegistro(Model model) {
-        List<User> entrenadores = servicioUsuarios.obtenerEntrenadores();
-        model.addAttribute("entrenadores", entrenadores);
-        return "entrenador/registrar-cliente";
-    }
-
-    /**
-     * Procesa el registro de un nuevo cliente.
-     */
-    @PostMapping("/entrenador/clientes/nuevo")
-    public String registrarCliente(@RequestParam("username") String username,
-            @RequestParam("password") String password,
-            @RequestParam(value = "entrenadorId", required = false) Long entrenadorId,
-            RedirectAttributes redirectAttributes) {
-        try {
-            servicioUsuarios.registrarCliente(username, password, entrenadorId);
-            redirectAttributes.addFlashAttribute("success", "Cliente registrado exitosamente.");
-        } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error al registrar el cliente: " + e.getMessage());
-        }
-        return "redirect:/entrenador/clientes";
+        return "entrenador/lista-clientes";
     }
 
     @PostMapping("/entrenador/clientes/vincular")

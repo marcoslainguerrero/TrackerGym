@@ -21,15 +21,22 @@
     margin-bottom: 20px
 }
 
+.sidebar .brand-link {
+    flex-direction: column;
+}
+
 .sidebar-logo {
-    max-width: 130px;
+    max-width: 160px;
     height: auto;
-    margin-bottom: 5px;
+    margin-top: 20px;
+    margin-bottom: 0px;
+    margin-right: 0 !important;
 }
 
 .sidebar .logo h2 {
     color: var(--accent);
-    font-size: 22px
+    font-size: 22px;
+    margin-top: 0px;
 }
 
 .user-badge {

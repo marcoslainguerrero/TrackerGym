@@ -4,6 +4,7 @@ import TrackerGym.entity.Role;
 import TrackerGym.entity.User;
 import TrackerGym.repository.RoleRepository;
 import TrackerGym.repository.UserRepository;
+import TrackerGym.service.ServicioUsuarios;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -32,6 +33,9 @@ public class RegisterController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    @Autowired
+    private ServicioUsuarios servicioUsuarios;
+
     @GetMapping("/register")
     public String showRegisterForm() {
         return "register";
@@ -47,17 +51,25 @@ public class RegisterController {
 
         logger.info("Intento de registro: usuario={}, rol={}", username, role);
 
-        // Validar que las contraseñas coincidan
-        if (!password.equals(confirmPassword)) {
-            logger.warn("Las contraseñas no coinciden para usuario={}", username);
-            redirectAttributes.addAttribute("error", "Las contraseñas no coinciden");
-            return "redirect:/register";
-        }
-
         // Validar que la contraseña no esté vacía
         if (password == null || password.trim().isEmpty()) {
             logger.warn("Contraseña vacía para usuario={}", username);
-            redirectAttributes.addAttribute("error", "La contraseña no puede estar vacía");
+            redirectAttributes.addAttribute("error", "La contraseña no puede estar vacía.");
+            return "redirect:/register";
+        }
+
+        // Validar requisitos mínimos de seguridad de la contraseña
+        String errorPassword = servicioUsuarios.validarPassword(password);
+        if (errorPassword != null) {
+            logger.warn("Contraseña no cumple requisitos para usuario={}: {}", username, errorPassword);
+            redirectAttributes.addAttribute("error", errorPassword);
+            return "redirect:/register";
+        }
+
+        // Validar que las contraseñas coincidan
+        if (!password.equals(confirmPassword)) {
+            logger.warn("Las contraseñas no coinciden para usuario={}", username);
+            redirectAttributes.addAttribute("error", "Las contraseñas no coinciden.");
             return "redirect:/register";
         }
 
@@ -65,14 +77,14 @@ public class RegisterController {
         Optional<User> userExists = userRepository.findByUsername(username);
         if (userExists.isPresent()) {
             logger.warn("Usuario ya existe: {}", username);
-            redirectAttributes.addAttribute("error", "El usuario ya existe");
+            redirectAttributes.addAttribute("error", "El usuario ya existe.");
             return "redirect:/register";
         }
 
         // Validar que se haya seleccionado un rol
         if (role == null || role.isEmpty()) {
             logger.warn("Rol no seleccionado para usuario={}", username);
-            redirectAttributes.addAttribute("error", "Debes seleccionar un tipo de usuario");
+            redirectAttributes.addAttribute("error", "Debes seleccionar un tipo de usuario.");
             return "redirect:/register";
         }
 
@@ -81,7 +93,7 @@ public class RegisterController {
             Optional<Role> roleObj = roleRepository.findByName(role);
             if (roleObj.isEmpty()) {
                 logger.error("El rol no existe en la BD: {}", role);
-                redirectAttributes.addAttribute("error", "El rol seleccionado no existe en el sistema");
+                redirectAttributes.addAttribute("error", "El rol seleccionado no existe en el sistema.");
                 return "redirect:/register";
             }
 

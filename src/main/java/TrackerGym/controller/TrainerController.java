@@ -15,8 +15,11 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+import TrackerGym.entity.ContratoEntrenador;
+import TrackerGym.repository.ContratoEntrenadorRepository;
 
 @Controller
 @RequestMapping("/entrenador")
@@ -34,6 +37,9 @@ public class TrainerController {
     @Autowired
     private NotificacionService notificacionService;
 
+    @Autowired
+    private ContratoEntrenadorRepository contratoEntrenadorRepository;
+
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
         try {
@@ -48,6 +54,7 @@ public class TrainerController {
                 int totalSeries = 0;
                 Map<Long, Integer> clienteSeries = new HashMap<>();
                 Map<Long, LocalDate> ultimoRegistro = new HashMap<>();
+                Map<Long, Long> diasRestantes = new HashMap<>();
 
                 for (User cliente : clientes) {
                     List<SerieRealizada> series = serieRealizadaService.obtenerSeriesDelUsuario(cliente);
@@ -57,18 +64,30 @@ public class TrainerController {
                     if (!series.isEmpty()) {
                         ultimoRegistro.put(cliente.getId(), series.get(0).getFecha());
                     }
+
+                    Optional<ContratoEntrenador> contratoOpt = contratoEntrenadorRepository.findTopByClienteOrderByFechaFinDesc(cliente);
+                    if (contratoOpt.isPresent()) {
+                        long dias = ChronoUnit.DAYS.between(LocalDate.now(), contratoOpt.get().getFechaFin());
+                        diasRestantes.put(cliente.getId(), dias > 0 ? dias : 0);
+                    }
                 }
 
                 model.addAttribute("clientes", clientes);
                 model.addAttribute("totalSeries", totalSeries);
                 model.addAttribute("clienteSeries", clienteSeries);
                 model.addAttribute("ultimoRegistro", ultimoRegistro);
+                model.addAttribute("diasRestantes", diasRestantes);
+
+                // Histórico de clientes del entrenador
+                List<ContratoEntrenador> historicoClientes = contratoEntrenadorRepository.findByEntrenadorOrderByFechaInicioDesc(entrenador.get());
+                model.addAttribute("historicoClientes", historicoClientes);
             }
         } catch (Exception e) {
             model.addAttribute("clientes", new java.util.ArrayList<>());
             model.addAttribute("totalSeries", 0);
             model.addAttribute("clienteSeries", new java.util.HashMap<>());
             model.addAttribute("ultimoRegistro", new java.util.HashMap<>());
+            model.addAttribute("historicoClientes", new java.util.ArrayList<>());
         }
 
         return "entrenador/dashboard";
@@ -108,14 +127,35 @@ public class TrainerController {
                 List<User> clientes = userRepository.findByEntrenador(entrenador.get());
                 int totalSeries = 0;
                 Map<Long, Integer> clienteSeries = new HashMap<>();
+                Map<Long, LocalDate> ultimoRegistro = new HashMap<>();
+                Map<Long, Long> diasRestantes = new HashMap<>();
 
                 for (User c : clientes) {
                     List<SerieRealizada> s = serieRealizadaService.obtenerSeriesDelUsuario(c);
                     clienteSeries.put(c.getId(), s.size());
                     totalSeries += s.size();
+
+                    if (!s.isEmpty()) {
+                        ultimoRegistro.put(c.getId(), s.get(0).getFecha());
+                    }
+
+                    Optional<ContratoEntrenador> contratoOptOthers = contratoEntrenadorRepository.findTopByClienteOrderByFechaFinDesc(c);
+                    if (contratoOptOthers.isPresent()) {
+                        long dias = ChronoUnit.DAYS.between(LocalDate.now(), contratoOptOthers.get().getFechaFin());
+                        diasRestantes.put(c.getId(), dias > 0 ? dias : 0);
+                    }
                 }
 
                 double promedioSeries = seriesPorFecha.isEmpty() ? 0.0 : (double) series.size() / seriesPorFecha.size();
+
+                Optional<ContratoEntrenador> contratoOpt = contratoEntrenadorRepository.findTopByClienteOrderByFechaFinDesc(cliente.get());
+                if (contratoOpt.isPresent()) {
+                    long diasRestantesMain = ChronoUnit.DAYS.between(LocalDate.now(), contratoOpt.get().getFechaFin());
+                    model.addAttribute("tienePlan", true);
+                    model.addAttribute("diasRestantesPlan", diasRestantesMain > 0 ? diasRestantesMain : 0);
+                } else {
+                    model.addAttribute("tienePlan", false);
+                }
 
                 model.addAttribute("cliente", cliente.get());
                 model.addAttribute("clientes", clientes);
@@ -124,6 +164,8 @@ public class TrainerController {
                 model.addAttribute("promedioSeries", promedioSeries);
                 model.addAttribute("totalSeries", totalSeries);
                 model.addAttribute("clienteSeries", clienteSeries);
+                model.addAttribute("ultimoRegistro", ultimoRegistro);
+                model.addAttribute("diasRestantes", diasRestantes);
             } else {
                 model.addAttribute("error", "Cliente no encontrado o acceso denegado");
                 return "entrenador/dashboard";
@@ -177,7 +219,7 @@ public class TrainerController {
                                  ", Peso: " + (pesoAnterior != null ? pesoAnterior : "-") + "kg ➔ " + (pesoBD != null ? pesoBD : "-") + "kg).";
                     notificacionService.crearNotificacion(serie.get().getUsuario(), entrenador.get(), msj);
                     
-                    redirectAttributes.addFlashAttribute("success", "Serie actualizada correctamente");
+                    redirectAttributes.addFlashAttribute("success", "Serie actualizada correctamente.");
 
                     return "redirect:/entrenador/ver-cliente/" + serie.get().getUsuario().getId();
                 }
@@ -214,7 +256,7 @@ public class TrainerController {
                                  " del día " + serie.get().getFecha() + ".";
                     notificacionService.crearNotificacion(usuarioCliente, entrenador.get(), msj);
                     
-                    redirectAttributes.addFlashAttribute("success", "Serie eliminada correctamente");
+                    redirectAttributes.addFlashAttribute("success", "Serie eliminada correctamente.");
 
                     return "redirect:/entrenador/ver-cliente/" + clienteId;
                 }

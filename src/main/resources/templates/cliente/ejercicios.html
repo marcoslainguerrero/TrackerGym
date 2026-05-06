@@ -13,7 +13,7 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><img th:src="@{/img/logosintexto.svg}" alt="Logo" class="nav-logo"> TrackerGym</div>
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link" style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">TrackerGym</a></div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}" class="active">Ejercicios</a></li>
@@ -21,7 +21,7 @@
                 <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
-                <li><a th:href="@{/cliente/notificaciones}">🔔 Notificaciones</a></li>
+                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img th:src="@{/img/notification.svg}" alt="Notificaciones" style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;"> Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
@@ -35,19 +35,19 @@
     <div class="content-wrap">
         <div class="header-bar">
             <div class="page-header">
-                <h1>📋 Mis Ejercicios</h1>
+                <h1><img th:src="@{/img/listlogo.svg}" alt="Ejercicios" style="width: 1.5em; height: 1.5em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;"> Mis Ejercicios</h1>
             </div>
-            <a th:href="@{/cliente/anadir-ejercicio}" class="btn btn-primary">➕ Nuevo Ejercicio</a>
+            <a th:href="@{/cliente/anadir-ejercicio}" class="btn btn-primary"><img th:src="@{/img/addserie.svg}" alt="Nuevo" style="width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 4px;"> Nuevo Ejercicio</a>
         </div>
 
         <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
         <div th:if="${ejercicios.isEmpty()}" class="empty-state">
-            <div class="icon">📋</div>
+            <div class="icon"><img th:src="@{/img/listlogo.svg}" alt="Lista" style="width: 48px; height: 48px;"></div>
             <h3>No hay ejercicios disponibles</h3>
             <p>Comienza añadiendo tu primer ejercicio</p>
-            <a th:href="@{/cliente/anadir-ejercicio}" class="btn btn-primary">➕ Agregar Ejercicio</a>
+            <a th:href="@{/cliente/anadir-ejercicio}" class="btn btn-primary"><img th:src="@{/img/addserie.svg}" alt="Agregar" style="width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 4px;"> Agregar Ejercicio</a>
         </div>
 
         <div th:if="${!ejercicios.isEmpty()}" class="ejercicios-grid">
@@ -60,11 +60,11 @@
                     <a th:href="@{/cliente/agregar-serie(ejercicioId=${ejercicio.id})}"
                         class="btn btn-primary btn-sm">Agregar Serie</a>
                     <a th:if="${ejercicio.user != null}" th:href="@{/cliente/editar-ejercicio/{id}(id=${ejercicio.id})}"
-                        class="btn btn-secondary btn-sm">✏️ Editar</a>
+                        class="btn btn-secondary btn-sm"><img th:src="@{/img/edit.svg}" alt="Editar" style="width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 4px;"> Editar</a>
                     <form th:if="${ejercicio.user != null}" th:action="@{/cliente/eliminar-ejercicio/{id}(id=${ejercicio.id})}" method="post"
                         style="margin:0">
                         <button type="submit" class="btn btn-danger btn-sm"
-                            onclick="return confirm('¿Estás seguro?')">🗑️</button>
+                            onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                     </form>
                 </div>
             </div>
