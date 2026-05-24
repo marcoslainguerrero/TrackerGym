@@ -88,7 +88,7 @@ INSERT INTO roles (id, name) VALUES (1, 'ROLE_ADMIN'), (2, 'ROLE_USER');
 
 
 
--- 7. Insertar ejercicios predefinidos del sistema (Globales)
+-- 8. Insertar ejercicios predefinidos del sistema (Globales)
 INSERT INTO ejercicio (nombre, descripcion, grupo_muscular) VALUES
 ('Press de Banca', 'Ejercicio de pecho con barra', 'Pecho'),
 ('Sentadillas', 'Ejercicio de piernas con barra', 'Piernas'),
