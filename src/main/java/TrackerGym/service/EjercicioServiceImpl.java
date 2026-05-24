@@ -41,7 +41,7 @@ public class EjercicioServiceImpl {
      * globales del sistema (user_id = NULL), ordenados por nombre.
      */
     public List<Ejercicio> obtenerEjerciciosDeUsuario(User user) {
-        return ejercicioRepository.buscarEjerciciosPropiosOGlobalesOrdenadosPorNombre(user);
+        return ejercicioRepository.findByUserOrUserIsNullOrderByNombre(user);
     }
 
     /**
@@ -94,4 +94,3 @@ public class EjercicioServiceImpl {
         }
     }
 }
-

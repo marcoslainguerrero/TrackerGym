@@ -16,8 +16,8 @@ public interface EjercicioRepository extends JpaRepository<Ejercicio, Long> {
     List<Ejercicio> findAllByOrderByNombre();
 
     // Ejercicios propios del usuario + ejercicios globales del sistema (user_id = NULL)
-    List<Ejercicio> buscarEjerciciosPropiosOGlobalesOrdenadosPorNombre(User user);
+    List<Ejercicio> findByUserOrUserIsNullOrderByNombre(User user);
 
     // Ejercicios propios del usuario filtrados por grupo muscular
-    List<Ejercicio> buscarEjerciciosPropiosPorGrupoMuscularOrdenadosPorNombre(User user, String grupoMuscular);
+    List<Ejercicio> findByUserAndGrupoMuscularOrderByNombre(User user, String grupoMuscular);
 }

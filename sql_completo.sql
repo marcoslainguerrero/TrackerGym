@@ -45,7 +45,7 @@ CREATE TABLE serie_realizada (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     usuario_id BIGINT NOT NULL,
     ejercicio_id BIGINT,
-    nombre_ejercicio VARCHAR(255), -- ¡NUEVO!: Almacena el nombre para no perderlo en el historial si se borra
+    nombre_ejercicio VARCHAR(255), 
     fecha DATE NOT NULL,
     numero_serie INT NOT NULL,
     repeticiones INT NOT NULL,
