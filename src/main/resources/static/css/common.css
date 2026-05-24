@@ -11,6 +11,7 @@
     --lighter: #f8f9fa;
     --dark: #2c3e50;
     --white: #ffffff;
+    --text-muted: #999;
     --shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
     --shadow-lg: 0 8px 30px rgba(0, 0, 0, 0.12);
     --radius: 12px;
@@ -374,3 +375,29 @@ a {
     text-decoration: none;
     opacity: 0.9;
 }
+
+/* ===== PAGE HEADER MODIFIER ===== */
+.page-header-center {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+/* ===== ICON UTILITIES ===== */
+.icon-header     { width: 1.5em; height: 1.5em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px; }
+.icon-section    { width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 8px; }
+.icon-section-mid { width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 8px; }
+.icon-section-sm { width: 1.3em; height: 1.3em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px; }
+.icon-btn        { width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 4px; }
+.icon-btn-sm     { width: 1.2em; height: 1.2em; vertical-align: text-bottom; margin-right: 4px; }
+.icon-btn-lg     { width: 1.8em; height: 1.8em; vertical-align: text-bottom; margin-right: 4px; }
+.icon-empty      { width: 48px; height: 48px; }
+.icon-empty-lg   { width: 64px; height: 64px; }
+.icon-inline     { width: 1em; height: 1em; vertical-align: middle; margin-right: 8px; }
+.icon-action     { width: 24px; height: 24px; vertical-align: middle; }
+.icon-edit-xs    { width: 14px; height: 14px; vertical-align: middle; }
+
+/* ===== LAYOUT UTILITIES ===== */
+.text-muted          { color: var(--text-muted); }
+.stat-highlight      { color: var(--primary); font-weight: bold; }
+.empty-state-compact { padding: 24px 20px; }
+.btn-xs              { font-size: 12px; padding: 4px 8px; }

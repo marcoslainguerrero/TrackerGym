@@ -5,6 +5,14 @@ import lombok.Getter;
 import lombok.Setter;
 import java.time.LocalDate;
 
+/**
+ * Formaliza la relación entrenador-cliente con fechas de inicio y fin.
+ * Permite controlar la vigencia del servicio de entrenamiento.
+ *
+ * ServicioUsuarios.comprobarContratoActivo() verifica si la fecha_fin
+ * ha pasado y, en caso afirmativo, desvincula automáticamente al cliente
+ * de su entrenador y elimina el contrato expirado.
+ */
 @Entity
 @Table(name = "contrato_entrenador")
 @Getter

@@ -15,6 +15,12 @@ import TrackerGym.entity.ContratoEntrenador;
 import TrackerGym.repository.ContratoEntrenadorRepository;
 import TrackerGym.service.NotificacionService;
 
+/**
+ * Servicio central de usuarios.
+ *
+ * Gestiona operaciones relacionadas con el registro, contratos, validación
+ * de contraseñas y relaciones entre clientes y entrenadores.
+ */
 @Service
 public class ServicioUsuarios {
 
@@ -53,6 +59,12 @@ public class ServicioUsuarios {
         return null;
     }
 
+    /**
+     * Comprueba si el contrato del cliente está activo.
+     *
+     * Si el contrato ya expiró, notifica al cliente, elimina el contrato y
+     * desvincula al entrenador del cliente.
+     */
     public Optional<ContratoEntrenador> comprobarContratoActivo(User cliente) {
         Optional<ContratoEntrenador> contratoOpt = contratoEntrenadorRepository
                 .findTopByClienteOrderByFechaFinDesc(cliente);
@@ -81,18 +93,33 @@ public class ServicioUsuarios {
         return Optional.empty();
     }
 
+    /**
+     * Obtiene todos los usuarios que están asignados a algún entrenador.
+     */
     public List<User> obtenerClientes() {
         return userRepository.findByEntrenadorIsNotNull();
     }
 
+    /**
+     * Obtiene todos los usuarios con rol de entrenador/administrador.
+     */
     public List<User> obtenerEntrenadores() {
         return userRepository.findByRoles_Name("ROLE_ADMIN");
     }
 
+    /**
+     * Guarda o actualiza un usuario en la base de datos.
+     */
     public User guardarUsuario(User user) {
         return userRepository.save(user);
     }
 
+    /**
+     * Registra un nuevo cliente en el sistema.
+     *
+     * Crea el usuario, le asigna el rol ROLE_USER, codifica la contraseña con
+     * BCrypt y le vincula un entrenador si se proporciona.
+     */
     public User registrarCliente(String username, String password, Long entrenadorId) throws Exception {
         // Verificar si el usuario ya existe
         if (userRepository.findByUsername(username).isPresent()) {
@@ -101,6 +128,9 @@ public class ServicioUsuarios {
 
         User user = new User();
         user.setUsername(username);
+        // La capa de servicio intercepta la contraseña original y la encripta
+        // usando BCryptPasswordEncoder. El hash generado se guarda en la base de datos,
+        // asegurando la integridad de las credenciales.
         user.setPassword(passwordEncoder.encode(password));
 
         // Asignar rol USER
@@ -119,6 +149,11 @@ public class ServicioUsuarios {
         return userRepository.save(user);
     }
 
+    /**
+     * Contrata un entrenador para un cliente.
+     *
+     * Crea un contrato de un mes y asigna el entrenador al cliente.
+     */
     public User contratarEntrenador(Long clienteId, Long entrenadorId) {
         Optional<User> cliente = userRepository.findById(clienteId);
         Optional<User> entrenador = userRepository.findById(entrenadorId);
@@ -141,6 +176,12 @@ public class ServicioUsuarios {
         return null;
     }
 
+    /**
+     * Vincula un cliente existente a un entrenador y crea un contrato.
+     *
+     * Útil cuando el cliente ya está registrado y solo falta asignarle un
+     * entrenador.
+     */
     public void vincularClienteExistente(String username, Long entrenadorId) throws Exception {
         Optional<User> usuarioOpt = userRepository.findByUsername(username);
 

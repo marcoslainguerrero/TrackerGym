@@ -1,4 +1,4 @@
--- actualizado a 20-04
+-- actualizado a 24-05
 
 
 
@@ -86,12 +86,7 @@ CREATE TABLE contrato_entrenador (
 -- Insertamos roles con el prefijo ROLE_ (estándar de Spring Security)
 INSERT INTO roles (id, name) VALUES (1, 'ROLE_ADMIN'), (2, 'ROLE_USER');
 
--- Insertamos el administrador (Password: admin123)
-INSERT INTO usuarios (id, username, password, entrenador_id) 
-VALUES (1, 'entrenador_master', '$2a$10$QnAHnj.vqNOqfyDwaSw00O3Vn4gaAhbtatMqSTL.RrtWvdXL/bJ9.', NULL);
 
--- Asignamos el rol ADMIN al usuario creado
-INSERT INTO usuarios_roles (usuario_id, role_id) VALUES (1, 1);
 
 -- 7. Insertar ejercicios predefinidos del sistema (Globales)
 INSERT INTO ejercicio (nombre, descripcion, grupo_muscular) VALUES
@@ -105,13 +100,3 @@ INSERT INTO ejercicio (nombre, descripcion, grupo_muscular) VALUES
 ('Curl de Bíceps', 'Ejercicio de bíceps con mancuernas', 'Bíceps'),
 ('Extensión de Tríceps', 'Ejercicio de tríceps con cable', 'Tríceps');
 
--- 8. Verificación final
-SELECT u.username, r.name AS rol 
-FROM usuarios u 
-JOIN usuarios_roles ur ON u.id = ur.usuario_id 
-JOIN roles r ON ur.role_id = r.id;
-
-SELECT * FROM usuarios;
-SELECT * FROM ejercicio;
-select * from notificacion_cambio;
-select * from contrato_entrenador;

@@ -21,6 +21,13 @@ import java.util.stream.Collectors;
 import TrackerGym.entity.ContratoEntrenador;
 import TrackerGym.repository.ContratoEntrenadorRepository;
 
+/**
+ * Controlador del entrenador.
+ *
+ * Maneja las vistas y las acciones disponibles para los usuarios con rol
+ * ROLE_ADMIN, incluyendo el dashboard de entrenador, la vista de cliente, y
+ * la edición/eliminación de series realizadas por los clientes.
+ */
 @Controller
 @RequestMapping("/entrenador")
 public class TrainerController {
@@ -40,6 +47,12 @@ public class TrainerController {
     @Autowired
     private ContratoEntrenadorRepository contratoEntrenadorRepository;
 
+    /**
+     * Carga el dashboard del entrenador.
+     *
+     * Recopila estadísticas de los clientes asignados, incluye total de series,
+     * último registro de entrenamiento y días restantes de contrato.
+     */
     @GetMapping("/dashboard")
     public String dashboard(Model model, Authentication authentication) {
         try {
@@ -93,6 +106,12 @@ public class TrainerController {
         return "entrenador/dashboard";
     }
 
+    /**
+     * Muestra el detalle de un cliente específico para el entrenador.
+     *
+     * Valida que el cliente pertenezca al entrenador autenticado, carga el
+     * historial de series por fecha y calcula estadísticas de todos los clientes.
+     */
     @GetMapping("/ver-cliente/{clienteId}")
     public String verClienteSeries(
             @PathVariable("clienteId") Long clienteId,
@@ -114,8 +133,7 @@ public class TrainerController {
                 // Obtener series del cliente
                 List<SerieRealizada> series = serieRealizadaService.obtenerSeriesDelUsuario(cliente.get());
 
-                // Agrupar por fecha
-                // Agrupar por fecha (orden descendednte)
+                // Agrupar las series por fecha en orden descendente para mostrar el historial más reciente primero.
                 Map<LocalDate, List<SerieRealizada>> seriesPorFecha = new TreeMap<>(Collections.reverseOrder());
                 for (SerieRealizada serie : series) {
                     if (serie.getFecha() != null) {
@@ -146,6 +164,7 @@ public class TrainerController {
                     }
                 }
 
+                // Calcular el promedio de series por sesión del cliente.
                 double promedioSeries = seriesPorFecha.isEmpty() ? 0.0 : (double) series.size() / seriesPorFecha.size();
 
                 Optional<ContratoEntrenador> contratoOpt = contratoEntrenadorRepository.findTopByClienteOrderByFechaFinDesc(cliente.get());
@@ -186,6 +205,11 @@ public class TrainerController {
         return "entrenador/ver-cliente";
     }
 
+    /**
+     * Actualiza una serie del cliente y genera una notificación automática
+     * informándole del cambio. Verifica que la serie pertenece a un cliente
+     * asignado al entrenador que hace la petición (control de acceso).
+     */
     @PostMapping("/editar-serie/{serieId}")
     public String editarSerie(
             @PathVariable("serieId") Long serieId,
@@ -199,7 +223,7 @@ public class TrainerController {
             Optional<SerieRealizada> serie = serieRealizadaRepository.findById(serieId);
 
             if (serie.isPresent()) {
-                // Verificar que el entrenador es válido para este cliente
+                // Solo puede editar si el cliente pertenece a este entrenador
                 Optional<User> entrenador = userRepository.findByUsername(authentication.getName());
                 if (entrenador.isPresent() && serie.get().getUsuario().getEntrenador() != null &&
                         serie.get().getUsuario().getEntrenador().getId().equals(entrenador.get().getId())) {
@@ -231,6 +255,11 @@ public class TrainerController {
         return "redirect:/entrenador/dashboard";
     }
 
+    /**
+     * Elimina una serie del cliente y genera una notificación automática.
+     * Al igual que editarSerie, verifica la autorización del entrenador
+     * antes de proceder con el borrado.
+     */
     @PostMapping("/eliminar-serie/{serieId}")
     public String eliminarSerie(
             @PathVariable("serieId") Long serieId,

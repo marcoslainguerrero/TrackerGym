@@ -19,11 +19,32 @@ public class SecurityConfig {
         this.userDetailsService = userDetailsService;
     }
 
+    /**
+     * Componente (bean) encargado de la encriptación de contraseñas.
+     * Utiliza el algoritmo BCrypt, que aplica automáticamente un "salt" aleatorio
+     * para generar un hash criptográfico unidireccional y seguro. Esto garantiza
+     * que el sistema nunca almacene contraseñas en texto plano en la base de datos.
+     *
+     * @return instancia de BCryptPasswordEncoder.
+     */
+
+
+
+
+    
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Define las reglas de acceso HTTP de la aplicación:
+     * - Rutas públicas: landing, login, register y recursos estáticos.
+     * - /entrenador/** requiere ROLE_ADMIN (entrenadores).
+     * - /cliente/** requiere ROLE_USER (clientes).
+     * - Tras un login exitoso redirige siempre a /home, donde el controlador se
+     *   se encarga de reenviar al dashboard correcto según el rol del usuario.
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
@@ -43,7 +64,9 @@ public class SecurityConfig {
         return http.build();
     }
 
-    // Esta es la forma alternativa si el constructor de Dao sigue fallando
+    // Registra el CustomUserDetailsService y el codificador BCrypt como proveedor
+    // de autenticación.  Esto es necesario para que Spring Security sepa cómo cargar
+    //  los detalles del usuario y cómo verificar las contraseñas durante el proceso de login. 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder = http

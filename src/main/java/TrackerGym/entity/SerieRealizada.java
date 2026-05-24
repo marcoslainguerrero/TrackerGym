@@ -4,6 +4,16 @@ import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.math.BigDecimal;
 
+/**
+ * Tabla más importante de la aplicación. Registra cada serie concreta
+ * ejecutada por un usuario: qué ejercicio hizo, cuántas repeticiones,
+ * con qué peso y en qué fecha.
+ *
+ * Decisión de diseño clave: ejercicio_id es nullable y se almacena
+ * nombre_ejercicio como texto plano. Si el ejercicio original se elimina
+ * en el futuro, el historial de series del usuario permanece intacto
+ * con el nombre guardado en nombre_ejercicio.
+ */
 @Entity
 @Table(name = "serie_realizada")
 public class SerieRealizada {
@@ -15,10 +25,12 @@ public class SerieRealizada {
     @JoinColumn(name = "usuario_id", nullable = false)
     private User usuario;
 
+    // Nullable: si el ejercicio se elimina, la FK pasa a NULL pero el historial se conserva
     @ManyToOne
     @JoinColumn(name = "ejercicio_id", nullable = true)
     private Ejercicio ejercicio;
 
+    // Copia del nombre del ejercicio para preservar el historial aunque el ejercicio se borre
     @Column(name = "nombre_ejercicio")
     private String nombreEjercicio;
 

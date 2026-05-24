@@ -8,90 +8,7 @@
     <link rel="stylesheet" th:href="@{/css/landing.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
-    <style>
-        /* ── Requisitos de contraseña ── */
-        .password-requirements {
-            margin-top: 4px;
-            padding: 6px 8px;
-            background: rgba(0, 0, 0, 0.04);
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 6px;
-            font-size: 0.75rem;
-        }
-
-        .password-requirements p {
-            margin: 0 0 2px;
-            font-weight: 600;
-            color: #1a1a2e;
-            letter-spacing: 0.02em;
-        }
-        
-        .req-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 1px 0;
-            color: #f87171;          /* rojo por defecto */
-            transition: color 0.25s ease;
-        }
-
-        .req-item.valid {
-            color: #4ade80;          /* verde al cumplirse */
-        }
-
-        .req-item .req-icon {
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            border: 2px solid currentColor;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            font-size: 0.65rem;
-            font-weight: 700;
-            transition: background 0.25s ease, border-color 0.25s ease;
-        }
-
-        .req-item.valid .req-icon {
-            background: #4ade80;
-            border-color: #4ade80;
-            color: #0a0a0a;
-        }
-
-        /* Barra de fuerza */
-        .strength-bar-wrap {
-            display: flex;
-            gap: 4px;
-            margin-top: 10px;
-        }
-
-        .strength-segment {
-            flex: 1;
-            height: 4px;
-            border-radius: 4px;
-            background: rgba(255, 255, 255, 0.12);
-            transition: background 0.3s ease;
-        }
-
-        .strength-segment.active-weak   { background: #f87171; }
-        .strength-segment.active-medium { background: #fbbf24; }
-        .strength-segment.active-strong { background: #4ade80; }
-
-        /* Alerta de error con icono */
-        .alert-error {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .alert-error::before {
-            content: "⚠";
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/register.css}">
 </head>
 
 <body class="auth-page">
@@ -187,6 +104,7 @@
     </div>
 
     <script>
+        // Reglas de validación de contraseña utilizadas en el formulario de registro.
         const rules = [
             { id: 'req-length',  iconId: 'icon-length',  test: p => p.length > 8 },
             { id: 'req-upper',   iconId: 'icon-upper',   test: p => /[A-Z]/.test(p) },
@@ -194,6 +112,7 @@
             { id: 'req-special', iconId: 'icon-special', test: p => /[!@#$%^&*()+=[\]{};:'",.<>?/\\|`~_-]/.test(p) }
         ];
 
+        // Segmentos de la barra de fuerza de contraseña.
         const segments = [
             document.getElementById('seg1'),
             document.getElementById('seg2'),
@@ -201,6 +120,7 @@
             document.getElementById('seg4')
         ];
 
+        // Evalúa la fortaleza de la contraseña y actualiza la UI.
         function checkPasswordStrength(password) {
             let passed = 0;
 
@@ -213,7 +133,7 @@
                 if (ok) passed++;
             });
 
-            // Actualizar barra de fuerza
+            // Actualizar barra de progreso según el número de reglas cumplidas.
             const colorClass = passed <= 1 ? 'active-weak'
                              : passed <= 3 ? 'active-medium'
                              :               'active-strong';

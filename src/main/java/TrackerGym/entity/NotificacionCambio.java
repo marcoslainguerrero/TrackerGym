@@ -3,6 +3,14 @@ package TrackerGym.entity;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
+/**
+ * Notificación generada automáticamente cuando un entrenador modifica o
+ * elimina una serie de un cliente. Tiene dos FK a usuarios: una para
+ * el cliente que la recibe y otra para el entrenador que la genera.
+ *
+ * El flag "leida" permite mostrar el contador de notificaciones no leídas
+ * en la barra de navegación del cliente (gestionado por GlobalControllerAdvice).
+ */
 @Entity
 @Table(name = "notificacion_cambio")
 public class NotificacionCambio {

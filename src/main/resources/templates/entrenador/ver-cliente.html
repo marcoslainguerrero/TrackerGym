@@ -36,7 +36,7 @@
     </aside>
 
     <main class="main">
-        <a th:href="@{/entrenador/dashboard}" class="btn-link" style="margin-bottom: 16px; display: inline-block;">←
+        <a th:href="@{/entrenador/dashboard}" class="btn-link btn-link-back">←
             Volver al Dashboard</a>
 
         <div th:if="${error}" class="alert alert-error" th:text="${error}"></div>
@@ -51,7 +51,7 @@
 
         <!-- Stats -->
         <div class="stats-row" th:if="${cliente}">
-            <div th:if="${tienePlan}" class="stat-card" style="border: 2px solid var(--primary-color);">
+            <div th:if="${tienePlan}" class="stat-card stat-card-highlight">
                 <div class="label">Días restantes del Plan</div>
                 <div class="number" th:text="${diasRestantesPlan} + ' días'">0 días</div>
             </div>
@@ -72,8 +72,7 @@
 
         <!-- Series History -->
         <div class="section-card" th:if="${cliente}">
-            <h2><img th:src="@{/img/calendar.svg}" alt="Historial"
-                    style="width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 8px;"> Historial de
+            <h2><img th:src="@{/img/calendar.svg}" alt="Historial" class="icon-section-mid"> Historial de
                 Entrenamientos</h2>
 
             <div th:if="${#maps.isEmpty(seriesPorFecha)}" class="empty-state">
@@ -90,30 +89,25 @@
 
                 <div th:each="serie : ${seriesPorFecha.get(fecha)}">
                     <div class="serie-item">
-                        <div style="display: flex; justify-content: space-between; align-items: start;">
+                        <div class="serie-item-header">
                             <h4>
                                 <span
                                     th:text="${serie.nombreEjercicio != null ? serie.nombreEjercicio : 'Ejercicio eliminado'}">Ejercicio</span>
-                                <span style="color: #999; font-weight: normal;"> — Serie <span
+                                <span class="serie-number-label"> — Serie <span
                                         th:text="${serie.numeroSerie}">1</span></span>
                             </h4>
-                            <div class="action-buttons" style="display: flex; align-items: center; gap: 8px;">
+                            <div class="action-buttons">
                                 <button class="btn-icon" title="Editar" th:data-id="${serie.id}"
                                     th:data-reps="${serie.repeticiones}"
                                     th:data-peso="${serie.peso != null ? serie.peso : ''}"
                                     th:data-notas="${serie.notas != null ? serie.notas : ''}"
-                                    onclick="openEditModal(this)"
-                                    style="border: none; background: none; padding: 0; cursor: pointer; display: flex;">
-                                    <img th:src="@{/img/edit.svg}" alt="Editar"
-                                        style="width: 24px; height: 24px; vertical-align: middle;">
+                                    onclick="openEditModal(this)">
+                                    <img th:src="@{/img/edit.svg}" alt="Editar" class="icon-action">
                                 </button>
                                 <form th:action="@{/entrenador/eliminar-serie/{id}(id=${serie.id})}" method="post"
-                                    onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta serie?');"
-                                    style="margin: 0; display: flex;">
-                                    <button type="submit" class="btn-icon" title="Eliminar"
-                                        style="border: none; background: none; padding: 0; cursor: pointer; display: flex;">
-                                        <img th:src="@{/img/trash.svg}" alt="Eliminar"
-                                            style="width: 24px; height: 24px; vertical-align: middle;">
+                                    onsubmit="return confirm('¿Estás seguro de que quieres eliminar esta serie?');">
+                                    <button type="submit" class="btn-icon" title="Eliminar">
+                                        <img th:src="@{/img/trash.svg}" alt="Eliminar" class="icon-action">
                                     </button>
                                 </form>
                             </div>
@@ -132,11 +126,10 @@
 
         <!-- Other Clients -->
         <div class="section-card" th:if="${clientes != null and clientes.size() > 1}">
-            <h2><img th:src="@{/img/planactivo.svg}" alt="Clientes"
-                    style="width: 1.8em; height: 1.8em; vertical-align: middle; margin-right: 8px;"> Otros Clientes</h2>
+            <h2><img th:src="@{/img/planactivo.svg}" alt="Clientes" class="icon-btn-lg"> Otros Clientes</h2>
             <div class="clients-grid">
                 <div th:each="c : ${clientes}" th:if="${c.id != cliente.id}">
-                    <a th:href="@{/entrenador/ver-cliente/{id}(id=${c.id})}" style="text-decoration: none;">
+                    <a th:href="@{/entrenador/ver-cliente/{id}(id=${c.id})}" class="client-card-link">
                         <div class="client-card">
                             <div class="header">
                                 <div>
@@ -156,24 +149,21 @@
                                 </div>
                                 <div class="client-stat-row" th:if="${ultimoRegistro.get(c.id) == null}">
                                     <span>Última Sesión</span>
-                                    <span style="color: #999;">Sin registros</span>
+                                    <span class="text-muted">Sin registros</span>
                                 </div>
-                                <div class="client-stat-row" th:if="${diasRestantes.get(c.id) != null}"
-                                    style="margin-top: 2px; padding-top: 8px; border-top: 1px dashed #eee;">
+                                <div class="client-stat-row client-stat-row-plan" th:if="${diasRestantes.get(c.id) != null}">
                                     <span>Días Restantes del Plan</span>
-                                    <span style="color: var(--primary); font-weight: bold;"
+                                    <span class="stat-highlight"
                                         th:text="${diasRestantes.get(c.id)} + ' días'">Sin plan</span>
                                 </div>
-                                <div class="client-stat-row" th:if="${diasRestantes.get(c.id) == null}"
-                                    style="margin-top: 2px; padding-top: 8px; border-top: 1px dashed #eee;">
+                                <div class="client-stat-row client-stat-row-plan" th:if="${diasRestantes.get(c.id) == null}">
                                     <span>Días Restantes del Plan</span>
-                                    <span style="color: #999;">Sin plan</span>
+                                    <span class="text-muted">Sin plan</span>
                                 </div>
                             </div>
                             <div class="footer">
                                 <span class="btn btn-primary btn-sm btn-block">
-                                    <img th:src="@{/img/estadistic.svg}" alt="Progreso"
-                                        style="width: 1.2em; height: 1.2em; vertical-align: text-bottom; margin-right: 4px;">
+                                    <img th:src="@{/img/estadistic.svg}" alt="Progreso" class="icon-btn-sm">
                                     Ver Progreso
                                 </span>
                             </div>
@@ -188,7 +178,7 @@
     <div id="editModal" class="modal">
         <div class="modal-content">
             <span class="close-modal" onclick="closeEditModal()">&times;</span>
-            <h3 style="margin-bottom: 20px; color: var(--primary);">✏️ Editar Serie</h3>
+            <h3>✏️ Editar Serie</h3>
 
             <form id="editForm" method="post">
                 <div class="form-group">
@@ -206,7 +196,7 @@
                     <input type="text" id="editNotas" name="notas">
                 </div>
 
-                <div class="form-actions" style="margin-top: 24px;">
+                <div class="form-actions">
                     <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
                     <button type="button" class="btn btn-secondary btn-block"
                         onclick="closeEditModal()">Cancelar</button>
@@ -216,6 +206,7 @@
     </div>
 
     <script>
+        // Cierra la barra lateral en móviles si se hace clic fuera de ella.
         document.addEventListener('click', function (e) {
             const sidebar = document.querySelector('.sidebar');
             const toggle = document.querySelector('.sidebar-toggle');
@@ -223,13 +214,14 @@
                 sidebar.classList.remove('open');
             }
 
-            // Close modal if clicked outside
+            // Cierra el modal de edición si el clic se produce fuera del modal.
             const modal = document.getElementById('editModal');
             if (e.target === modal) {
                 closeEditModal();
             }
         });
 
+        // Abre el modal y carga los datos de la serie seleccionada para editar.
         function openEditModal(btn) {
             const id = btn.getAttribute('data-id');
             const reps = btn.getAttribute('data-reps');

@@ -44,3 +44,83 @@
         grid-template-columns: 1fr
     }
 }
+
+/* ===== SERIES ACTIONS ===== */
+.serie-actions {
+    margin-top: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+.serie-actions form {
+    margin: 0;
+}
+
+.serie-actions .btn-danger {
+    height: 100%;
+}
+
+/* ===== DATE TEXT ===== */
+.date-text {
+    text-transform: capitalize;
+}
+
+/* ===== EDIT MODAL ===== */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 100;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    border-radius: 8px;
+}
+
+.close-modal {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.modal h3 {
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
+.modal .form-group {
+    margin-bottom: 15px;
+}
+
+.modal .form-group label {
+    margin-bottom: 5px;
+}
+
+.modal .form-group input {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+.modal .form-actions {
+    margin-top: 24px;
+    display: flex;
+    gap: 10px;
+}
+
+.modal .form-actions .btn {
+    flex: 1;
+}

@@ -4,6 +4,17 @@ import jakarta.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Representa la definición de un ejercicio reutilizable.
+ *
+ * Ejercicios con user_id = NULL son ejercicios predefinidos del sistema,
+ * visibles para todos los usuarios. Los que tienen user_id asignado son
+ * ejercicios personalizados creados por ese usuario concreto.
+ *
+ * La relación con SerieRealizada es OneToMany: un ejercicio puede tener
+ * múltiples series registradas. El campo ejercicio_id en SerieRealizada es
+ * nullable para preservar el historial cuando el ejercicio es eliminado.
+ */
 @Entity
 @Table(name = "ejercicio")
 public class Ejercicio {
@@ -20,6 +31,7 @@ public class Ejercicio {
     @Column(name = "grupo_muscular")
     private String grupoMuscular;
 
+    // NULL = ejercicio global del sistema; con valor = ejercicio privado del usuario
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

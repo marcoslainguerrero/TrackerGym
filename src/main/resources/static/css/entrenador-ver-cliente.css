@@ -241,6 +241,68 @@
     justify-content: flex-end;
 }
 
+/* ===== BACK LINK ===== */
+.btn-link-back {
+    margin-bottom: 16px;
+    display: inline-block;
+}
+
+/* ===== HIGHLIGHTED STAT CARD ===== */
+.stat-card-highlight {
+    border: none;
+    border-left: 4px solid var(--accent);
+}
+
+.stat-card-highlight .number {
+    color: var(--accent);
+}
+
+/* ===== SERIE ITEM HEADER ===== */
+.serie-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+/* ===== SERIE NUMBER LABEL ===== */
+.serie-number-label {
+    color: #999;
+    font-weight: normal;
+}
+
+/* ===== ACTION BUTTONS OVERRIDES ===== */
+.action-buttons {
+    align-items: center;
+}
+
+.action-buttons .btn-icon {
+    padding: 0;
+    display: flex;
+}
+
+.action-buttons form {
+    margin: 0;
+    display: flex;
+}
+
+/* ===== CLIENT CARD LINK ===== */
+.client-card-link {
+    text-decoration: none;
+}
+
+/* ===== CLIENT STAT ROW - PLAN SECTION ===== */
+.client-stat-row-plan {
+    margin-top: 2px;
+    padding-top: 8px;
+    border-top: 1px dashed #eee;
+}
+
+/* ===== MODAL HEADING ===== */
+.modal h3 {
+    margin-bottom: 20px;
+    color: var(--primary);
+}
+
 /* ===== RESPONSIVE ===== */
 @media (max-width: 768px) {
     .stats-row {

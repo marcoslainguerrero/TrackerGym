@@ -8,21 +8,6 @@
     <link rel="stylesheet" th:href="@{/css/landing.css}">
     <link rel="stylesheet" th:href="@{/css/common.css}">
     <link rel="stylesheet" th:href="@{/css/login.css}">
-    <style>
-        /* Alerta de error con icono — igual que en register */
-        .alert-error {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-        }
-
-        .alert-error::before {
-            content: "⚠";
-            font-size: 1.1rem;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-    </style>
 </head>
 
 <body class="auth-page">
@@ -65,8 +50,7 @@
                     <input type="password" id="password" name="password" placeholder="Tu contraseña" required
                         autocomplete="current-password">
                     <button type="button" class="toggle-password" onclick="togglePassword()">
-                        <img id="toggleIcon" th:src="@{/img/ojocerrado.svg}" alt="Mostrar/Ocultar"
-                            style="width: 20px; height: 20px;">
+                        <img id="toggleIcon" th:src="@{/img/ojocerrado.svg}" alt="Mostrar/Ocultar" class="toggle-icon">
                     </button>
                 </div>
             </div>
@@ -80,6 +64,8 @@
     </div>
 
     <script>
+        // Alterna la visibilidad de la contraseña en el formulario de login.
+        // También cambia el icono según el estado (mostrar/ocultar).
         function togglePassword() {
             const input = document.getElementById('password');
             const icon = document.getElementById('toggleIcon');

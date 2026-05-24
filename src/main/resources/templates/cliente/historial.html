@@ -13,7 +13,7 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link" style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">TrackerGym</a></div>
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link">TrackerGym</a></div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -21,11 +21,11 @@
                 <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}" class="active">Historial</a></li>
-                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img th:src="@{/img/notification.svg}" alt="Notificaciones" style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;"> Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
+                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img th:src="@{/img/notification.svg}" alt="Notificaciones"> Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
-                <form th:action="@{/logout}" method="post" style="margin:0">
+                <form th:action="@{/logout}" method="post">
                     <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
                 </form>
             </div>
@@ -34,22 +34,22 @@
 
     <div class="content-wrap">
         <div class="page-header">
-            <h1><img th:src="@{/img/historial.svg}" alt="Historial" style="width: 1.5em; height: 1.5em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;"> Historial Completo</h1>
+            <h1><img th:src="@{/img/historial.svg}" alt="Historial" class="icon-header"> Historial Completo</h1>
         </div>
 
         <div th:if="${success}" class="alert alert-success" th:text="${success}"></div>
 
         <div th:if="${series.isEmpty()}" class="empty-state">
-            <div class="icon"><img th:src="@{/img/info.svg}" alt="Vacio" style="width: 48px; height: 48px;"></div>
+            <div class="icon"><img th:src="@{/img/info.svg}" alt="Vacio" class="icon-empty"></div>
             <h3>Sin registros</h3>
             <p>No tienes ningún entrenamiento registrado aún.</p>
-            <a th:href="@{/cliente/agregar-serie}" class="btn btn-primary"><img th:src="@{/img/addserie.svg}" alt="Agregar" style="width: 1.2em; height: 1.2em; vertical-align: text-bottom; margin-right: 4px;"> Agregar Serie</a>
+            <a th:href="@{/cliente/agregar-serie}" class="btn btn-primary"><img th:src="@{/img/addserie.svg}" alt="Agregar" class="icon-btn-sm"> Agregar Serie</a>
         </div>
 
         <div th:if="${!seriesPorFecha.isEmpty()}">
             <div th:each="fecha : ${seriesPorFecha.keySet()}" class="section-card">
                 <div class="date-badge">
-                    <span><span th:text="${#temporals.format(fecha, 'EEEE, dd MMMM yyyy')}" style="text-transform: capitalize;">Fecha</span></span>
+                    <span><span th:text="${#temporals.format(fecha, 'EEEE, dd MMMM yyyy')}" class="date-text">Fecha</span></span>
                     <span th:text="${seriesPorFecha.get(fecha).size() == 1 ? '1 serie' : seriesPorFecha.get(fecha).size() + ' series'}">series</span>
                 </div>
 
@@ -66,16 +66,15 @@
                             <div th:if="${serie.notas != null}"><strong>Notas:</strong> <span
                                     th:text="${serie.notas}">...</span></div>
                         </div>
-                        <div style="margin-top:8px; display:flex; gap:8px;">
-                            <button type="button" class="btn btn-secondary btn-sm" 
+                        <div class="serie-actions">
+                            <button type="button" class="btn btn-secondary btn-sm"
                                 th:data-id="${serie.id}"
                                 th:data-reps="${serie.repeticiones}"
                                 th:data-peso="${serie.peso != null ? serie.peso : ''}"
                                 th:data-notas="${serie.notas != null ? serie.notas : ''}"
-                                onclick="openEditModal(this)"><img th:src="@{/img/edit.svg}" alt="Editar" style="width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 4px;"> Editar</button>
-                            <form th:action="@{/cliente/eliminar-serie/{serieId}(serieId=${serie.id})}" method="post"
-                                style="margin:0;">
-                                <button type="submit" class="btn btn-danger btn-sm" style="height: 100%;"
+                                onclick="openEditModal(this)"><img th:src="@{/img/edit.svg}" alt="Editar" class="icon-btn"> Editar</button>
+                            <form th:action="@{/cliente/eliminar-serie/{serieId}(serieId=${serie.id})}" method="post">
+                                <button type="submit" class="btn btn-danger btn-sm"
                                     onclick="return confirm('¿Estás seguro?')">Eliminar</button>
                             </form>
                         </div>
@@ -86,36 +85,37 @@
     </div>
 
     <!-- Edit Series Modal -->
-    <div id="editModal" class="modal" style="display:none; position:fixed; z-index:100; left:0; top:0; width:100%; height:100%; overflow:auto; background-color:rgba(0,0,0,0.5);">
-        <div class="modal-content" style="background-color:#fefefe; margin:15% auto; padding:20px; border:1px solid #888; width:80%; max-width:500px; border-radius:8px;">
-            <span class="close-modal" onclick="closeEditModal()" style="color:#aaa; float:right; font-size:28px; font-weight:bold; cursor:pointer;">&times;</span>
-            <h3 style="margin-bottom: 20px; color: var(--primary);"><img th:src="@{/img/edit.svg}" alt="Editar" style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 8px;"> Editar Serie</h3>
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            <h3><img th:src="@{/img/edit.svg}" alt="Editar" class="icon-section-mid"> Editar Serie</h3>
 
             <form id="editForm" method="post">
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="editRepeticiones" style="display:block; margin-bottom:5px;">Repeticiones</label>
-                    <input type="number" id="editRepeticiones" name="repeticiones" required min="1" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                <div class="form-group">
+                    <label for="editRepeticiones">Repeticiones</label>
+                    <input type="number" id="editRepeticiones" name="repeticiones" required min="1">
                 </div>
 
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="editPeso" style="display:block; margin-bottom:5px;">Peso (kg)</label>
-                    <input type="number" id="editPeso" name="peso" step="0.1" min="0" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                <div class="form-group">
+                    <label for="editPeso">Peso (kg)</label>
+                    <input type="number" id="editPeso" name="peso" step="0.1" min="0">
                 </div>
 
-                <div class="form-group" style="margin-bottom: 15px;">
-                    <label for="editNotas" style="display:block; margin-bottom:5px;">Notas</label>
-                    <input type="text" id="editNotas" name="notas" style="width:100%; padding:8px; border:1px solid #ccc; border-radius:4px;">
+                <div class="form-group">
+                    <label for="editNotas">Notas</label>
+                    <input type="text" id="editNotas" name="notas">
                 </div>
 
-                <div class="form-actions" style="margin-top: 24px; display:flex; gap:10px;">
-                    <button type="submit" class="btn btn-primary" style="flex:1;">Guardar Cambios</button>
-                    <button type="button" class="btn btn-secondary" style="flex:1;" onclick="closeEditModal()">Cancelar</button>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
+        // Abre el modal de edición de serie y carga los datos de la serie seleccionada.
         function openEditModal(btn) {
             const id = btn.getAttribute('data-id');
             const reps = btn.getAttribute('data-reps');
@@ -129,11 +129,12 @@
             document.getElementById('editModal').style.display = 'block';
         }
 
+        // Cierra el modal de edición.
         function closeEditModal() {
             document.getElementById('editModal').style.display = 'none';
         }
-        
-        // Cierra el modal si se hace clic fuera del contenido
+
+        // Si el usuario hace clic fuera del modal, se cierra.
         window.onclick = function(event) {
             const modal = document.getElementById('editModal');
             if (event.target == modal) {

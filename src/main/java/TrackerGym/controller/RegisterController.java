@@ -100,6 +100,10 @@ public class RegisterController {
             // Crear nuevo usuario
             User newUser = new User();
             newUser.setUsername(username);
+            // Interceptar y encriptar la contraseña original:
+            // Se pasa por el codificador BCryptPasswordEncoder definido en SecurityConfig,
+            // el cual genera un hash criptográfico seguro (aplicando un salt aleatorio).
+            // De esta forma, la contraseña real nunca se almacena ni se conoce.
             String encodedPassword = passwordEncoder.encode(password);
             newUser.setPassword(encodedPassword);
             newUser.setRoles(new HashSet<>());

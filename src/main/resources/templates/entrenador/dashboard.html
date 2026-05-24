@@ -37,8 +37,7 @@
 
     <main class="main">
         <div class="page-header">
-            <h1><img th:src="@{/img/dashboard.svg}" alt="Dashboard"
-                    style="width: 1.5em; height: 1.5em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;">
+            <h1><img th:src="@{/img/dashboard.svg}" alt="Dashboard" class="icon-header">
                 Dashboard del Entrenador</h1>
             <p>Monitorea el progreso de tus clientes</p>
         </div>
@@ -62,14 +61,13 @@
         </div>
 
         <!-- Client Cards -->
-        <h2 th:if="${!clientes.isEmpty()}" style="color: var(--primary); margin-bottom: 20px;"><img
-                th:src="@{/img/user.svg}" alt="Clientes"
-                style="width: 1.3em; height: 1.3em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;">
+        <h2 th:if="${!clientes.isEmpty()}" class="section-h2"><img
+                th:src="@{/img/user.svg}" alt="Clientes" class="icon-section-sm">
             Mis Clientes Activos
         </h2>
 
         <div th:if="${clientes.isEmpty()}" class="empty-state">
-            <div class="icon"><img th:src="@{/img/user.svg}" alt="Sin clientes" style="width: 64px; height: 64px;">
+            <div class="icon"><img th:src="@{/img/user.svg}" alt="Sin clientes" class="icon-empty-lg">
             </div>
             <h3>Aún no tienes clientes.</h3>
         </div>
@@ -93,28 +91,26 @@
                     </div>
                     <div class="client-stat-row" th:if="${!ultimoRegistro.containsKey(cliente.id)}">
                         <span>Última Sesión</span>
-                        <span style="color: #999;">Sin registros</span>
+                        <span class="text-muted">Sin registros</span>
                     </div>
-                    <div class="client-stat-row" th:if="${diasRestantes.containsKey(cliente.id)}"
-                        style="margin-top: 10px; padding-top: 8px; border-top: 1px dashed #eee;">
+                    <div class="client-stat-row client-stat-row-divider" th:if="${diasRestantes.containsKey(cliente.id)}">
                         <span>Días Restantes del Plan</span>
-                        <span style="color: var(--primary); font-weight: bold;"
+                        <span class="stat-highlight"
                             th:text="${diasRestantes.get(cliente.id)} + ' días'">30 días</span>
                     </div>
                 </div>
                 <div class="footer">
                     <a th:href="@{/entrenador/ver-cliente/{id}(id=${cliente.id})}"
                         class="btn btn-primary btn-sm btn-block"><img th:src="@{/img/estadistic.svg}" alt="Progreso"
-                            style="width: 1.8em; height: 1.8em; vertical-align: text-bottom; margin-right: 4px;"> Ver
+                            class="icon-btn-lg"> Ver
                         Progreso</a>
                 </div>
             </div>
         </div>
 
         <!-- Histórico de Clientes -->
-        <div class="section-card" style="margin-top: 32px;">
-            <h2 style="color: var(--primary); margin-bottom: 20px;"><img th:src="@{/img/historial.svg}" alt="Histórico"
-                    style="width: 1.3em; height: 1.3em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;">
+        <div class="section-card section-card-mt">
+            <h2 class="section-h2"><img th:src="@{/img/historial.svg}" alt="Histórico" class="icon-section-sm">
                 Histórico de Clientes</h2>
 
             <div th:if="${historicoClientes != null and !historicoClientes.isEmpty()}" class="table-wrap">
@@ -151,8 +147,8 @@
                 </table>
             </div>
 
-            <div th:if="${historicoClientes == null or historicoClientes.isEmpty()}" class="empty-state"
-                style="padding: 24px 20px;">
+            <div th:if="${historicoClientes == null or historicoClientes.isEmpty()}"
+                class="empty-state empty-state-compact">
                 <h3>Todavía no has tenido clientes</h3>
                 <p>Cuando un cliente contrate tus servicios, aparecerá aquí.</p>
             </div>
@@ -160,7 +156,7 @@
     </main>
 
     <script>
-        // Close sidebar on outside click (mobile)
+        // Cierra la barra lateral en móviles cuando se hace clic fuera de ella.
         document.addEventListener('click', function (e) {
             const sidebar = document.querySelector('.sidebar');
             const toggle = document.querySelector('.sidebar-toggle');

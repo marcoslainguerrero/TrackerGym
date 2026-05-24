@@ -134,6 +134,24 @@
     }
 }
 
+/* ===== SECTION HEADING ===== */
+.section-h2 {
+    color: var(--primary);
+    margin-bottom: 20px;
+}
+
+/* ===== CLIENT STAT ROW DIVIDER ===== */
+.client-stat-row-divider {
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px dashed #eee;
+}
+
+/* ===== SECTION CARD WITH TOP MARGIN ===== */
+.section-card-mt {
+    margin-top: 32px;
+}
+
 /* ===== TABLE (Histórico de Clientes) ===== */
 .table-wrap {
     background: var(--white);

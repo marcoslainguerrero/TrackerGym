@@ -38,7 +38,7 @@
     <main class="main">
         <div class="header-bar">
             <div class="page-header">
-                <h1><img th:src="@{/img/user.svg}" alt="Clientes" style="width: 1.5em; height: 1.5em; vertical-align: middle; margin-right: 8px;"> Mis Clientes</h1>
+                <h1><img th:src="@{/img/user.svg}" alt="Clientes" class="icon-header"> Mis Clientes</h1>
                 <p>Gestiona y monitorea el progreso de tus clientes</p>
             </div>
         </div>
@@ -73,7 +73,7 @@
                         <td th:text="${contratosActivos.containsKey(cliente.id) ? #temporals.format(contratosActivos.get(cliente.id).fechaFin, 'dd/MM/yyyy') : '-'}">-</td>
                         <td>
                             <a th:href="@{/entrenador/ver-cliente/{id}(id=${cliente.id})}"
-                                class="btn btn-primary btn-sm"><img th:src="@{/img/historial.svg}" alt="Progreso" style="width: 1.8em; height: 1.8em; vertical-align: text-bottom; margin-right: 4px;"> Ver Progreso</a>
+                                class="btn btn-primary btn-sm"><img th:src="@{/img/historial.svg}" alt="Progreso" class="icon-btn-lg"> Ver Progreso</a>
                         </td>
                     </tr>
                 </tbody>
@@ -81,13 +81,14 @@
         </div>
 
         <div th:if="${clientes.isEmpty()}" class="empty-state">
-            <div class="icon"><img th:src="@{/img/user.svg}" alt="Clientes" style="width: 48px; height: 48px;"></div>
+            <div class="icon"><img th:src="@{/img/user.svg}" alt="Clientes" class="icon-empty"></div>
             <h3>Aún no tienes clientes</h3>
             <p>Espera a que un cliente solicite tus servicios</p>
         </div>
     </main>
 
     <script>
+        // Cierra la barra lateral en móviles cuando se hace clic fuera de ella.
         document.addEventListener('click', function (e) {
             const sidebar = document.querySelector('.sidebar');
             const toggle = document.querySelector('.sidebar-toggle');

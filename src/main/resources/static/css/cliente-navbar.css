@@ -100,3 +100,29 @@
         font-size: 12px
     }
 }
+
+/* ===== NAVBAR BRAND LINK (cliente pages) ===== */
+.top-navbar .brand-link {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    color: #ffffff;
+}
+
+/* ===== LOGOUT FORM IN NAVBAR ===== */
+.navbar-user form {
+    margin: 0;
+}
+
+/* ===== NOTIFICATION ICON ===== */
+.nav-link-notificacion img {
+    width: 1.2em;
+    height: 1.2em;
+    vertical-align: middle;
+    margin-right: 4px;
+}
+
+/* ===== NARROW CONTENT LAYOUT ===== */
+.content-wrap-narrow {
+    max-width: 600px;
+}

@@ -1,0 +1,12 @@
+/* ===== FORM CONTAINER ===== */
+.form-container {
+    background: var(--white);
+    padding: 28px;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+/* ===== CANCEL BUTTON CENTERING ===== */
+.form-container .btn-secondary {
+    text-align: center;
+}

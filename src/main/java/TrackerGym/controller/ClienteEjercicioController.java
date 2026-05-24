@@ -96,6 +96,12 @@ public class ClienteEjercicioController {
         return "cliente/agregar-serie";
     }
 
+    /**
+     * Guarda una nueva serie realizada. Calcula automáticamente el número de serie
+     * del día (1ª, 2ª, 3ª...) delegando en SerieRealizadaService.obtenerProxNumeroSerie().
+     * Si no se indica fecha, usa la fecha actual. El peso se convierte a BigDecimal
+     * para mayor precisión decimal en la base de datos.
+     */
     @PostMapping("/guardar-serie")
     public String guardarSerie(
             @RequestParam("ejercicioId") Long ejercicioId,
@@ -221,6 +227,11 @@ public class ClienteEjercicioController {
         return "redirect:/cliente/ejercicios";
     }
 
+    /**
+     * Elimina un ejercicio propio del usuario. Los ejercicios globales del sistema
+     * (user_id = NULL) no pueden eliminarse desde aquí. La lógica de desvinculación
+     * de series históricas se delega en EjercicioServiceImpl.eliminarEjercicio().
+     */
     @PostMapping("/eliminar-ejercicio/{ejercicioId}")
     public String eliminarEjercicio(@PathVariable("ejercicioId") Long ejercicioId,
             Authentication authentication,

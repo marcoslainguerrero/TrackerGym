@@ -13,7 +13,7 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link" style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">TrackerGym</a></div>
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link">TrackerGym</a></div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -22,25 +22,23 @@
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
                 <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img
-                            th:src="@{/img/notification.svg}" alt="Notificaciones"
-                            style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;">
+                            th:src="@{/img/notification.svg}" alt="Notificaciones">
                         Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
                             th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
-                <form th:action="@{/logout}" method="post" style="margin:0">
+                <form th:action="@{/logout}" method="post">
                     <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
                 </form>
             </div>
         </div>
     </nav>
 
-    <div class="content-wrap" style="max-width: 600px;">
+    <div class="content-wrap content-wrap-narrow">
         <div class="form-section">
-            <div class="page-header" style="text-align:center">
-                <h1><img th:src="@{/img/addserie.svg}" alt="Agregar"
-                        style="width: 1.5em; height: 1.5em; vertical-align: middle; position: relative; top: -3px; margin-right: 8px;"> Agregar Nueva Serie
+            <div class="page-header page-header-center">
+                <h1><img th:src="@{/img/addserie.svg}" alt="Agregar" class="icon-header"> Agregar Nueva Serie
                 </h1>
             </div>
 
@@ -87,13 +85,14 @@
                 </div>
 
                 <button type="submit" class="btn btn-primary btn-block"><img th:src="@{/img/success..svg}" alt="Guardar"
-                        style="width: 1.5em; height: 1.5em; vertical-align: text-bottom; margin-right: 4px;"> Guardar
+                        class="icon-btn"> Guardar
                     Serie</button>
             </form>
         </div>
     </div>
 
     <script>
+        // Asigna la fecha actual al campo de fecha cuando se carga la página.
         document.getElementById('fecha').valueAsDate = new Date();
     </script>
 </body>

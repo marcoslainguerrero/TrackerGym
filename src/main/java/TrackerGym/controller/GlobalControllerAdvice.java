@@ -11,6 +11,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.Optional;
 
+/**
+ * Intercepta todas las respuestas de los controladores del paquete
+ * TrackerGym.controller y añade automáticamente el contador de
+ * notificaciones no leídas al modelo. Esto permite que la barra de
+ * navegación del cliente muestre el badge sin que cada controlador
+ * tenga que calcularlo individualmente.
+ */
 @ControllerAdvice(basePackages = "TrackerGym.controller")
 public class GlobalControllerAdvice {
 
@@ -20,6 +27,7 @@ public class GlobalControllerAdvice {
     @Autowired
     private UserRepository userRepository;
 
+    // Se ejecuta antes de renderizar cualquier vista; inyecta el dato global de notificaciones
     @ModelAttribute
     public void addAttributes(Model model, Authentication authentication) {
         if (authentication != null && authentication.isAuthenticated() && !authentication.getName().equals("anonymousUser")) {

@@ -13,9 +13,7 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link"
-                    style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">TrackerGym</a>
-            </div>
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link">TrackerGym</a></div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -24,23 +22,22 @@
                 <li><a th:href="@{/cliente/contratar-entrenador}" class="active">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
                 <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img
-                            th:src="@{/img/notification.svg}" alt="Notificaciones"
-                            style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;">
+                            th:src="@{/img/notification.svg}" alt="Notificaciones">
                         Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
                             th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
-                <form th:action="@{/logout}" method="post" style="margin:0">
+                <form th:action="@{/logout}" method="post">
                     <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
                 </form>
             </div>
         </div>
     </nav>
 
-    <div class="content-wrap" style="max-width: 600px;">
+    <div class="content-wrap content-wrap-narrow">
         <div class="form-section">
-            <div class="page-header" style="text-align:center">
+            <div class="page-header page-header-center">
                 <h1>Contratar Entrenador</h1>
                 <p>Selecciona un entrenador para comenzar tu transformación</p>
             </div>
@@ -50,7 +47,7 @@
 
             <div th:if="${entrenadorActual != null}" class="info-box">
                 <p>Entrenador Actual: <strong th:text="${entrenadorActual.username}"></strong></p>
-                <p style="margin-top: 5px; color: var(--primary); font-weight: 500;">
+                <p class="plan-status">
                     Plan Premium activo. Días restantes: <span th:text="${diasRestantes}">0</span> días.
                 </p>
             </div>
@@ -77,8 +74,7 @@
 
                 <div class="form-actions">
                     <button type="button" class="btn btn-primary" onclick="openPaymentModal()"><img
-                            th:src="@{/img/carrito.svg}" alt="Contratar"
-                            style="width: 1.8em; height: 1.8em; vertical-align: text-bottom; margin-right: 4px;">
+                            th:src="@{/img/carrito.svg}" alt="Contratar" class="icon-btn-lg">
                         Contratar
                         Entrenador</button>
                     <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary">Cancelar</a>
@@ -97,10 +93,9 @@
                 <div class="price-badge">8,99 € / mes</div>
             </div>
 
-            <div id="payment-error" class="alert alert-error"
-                style="display: none; margin-top: 15px; margin-bottom: 0;"></div>
+            <div id="payment-error" class="alert alert-error payment-error"></div>
 
-            <div class="payment-form" style="margin-top: 20px;">
+            <div class="payment-form">
                 <div class="form-group">
                     <label for="cardNumber">Número de Tarjeta</label>
                     <input type="text" id="cardNumber" placeholder="0000 0000 0000 0000" maxlength="19" required>
@@ -117,7 +112,7 @@
                     </div>
                 </div>
 
-                <div class="form-actions" style="margin-top: 24px; justify-content: center;">
+                <div class="form-actions">
                     <button type="button" class="btn btn-primary btn-block" onclick="processPayment()">Pagar y
                         Contratar</button>
                     <button type="button" class="btn btn-secondary btn-block"
@@ -128,13 +123,14 @@
     </div>
 
     <script>
+        // Modal de pago para contratar entrenador.
         const modal = document.getElementById('paymentModal');
         const form = document.getElementById('contratarForm');
         const errorDiv = document.getElementById('payment-error');
 
-        // Allow spaces and formatting in card input
+        // Formatea el número de tarjeta con espacios cada 4 dígitos.
         document.getElementById('cardNumber').addEventListener('input', function (e) {
-            let value = e.target.value.replace(/\D/g, ''); // Remove non-digits
+            let value = e.target.value.replace(/\D/g, ''); // Elimina todo lo que no sea dígito.
             if (value.length > 16) value = value.slice(0, 16);
             let formattedValue = '';
             for (let i = 0; i < value.length; i++) {
@@ -144,7 +140,7 @@
             e.target.value = formattedValue;
         });
 
-        // Formatting Expiry Date MM/YY
+        // Formatea la fecha de expiración en MM/YY.
         document.getElementById('expiryDate').addEventListener('input', function (e) {
             let value = e.target.value.replace(/\D/g, '');
             if (value.length > 4) value = value.slice(0, 4);
@@ -154,13 +150,13 @@
             e.target.value = value;
         });
 
-        // CVV should only be digits
+        // Asegura que el CVV solo contenga dígitos y máximo 3 caracteres.
         document.getElementById('cvv').addEventListener('input', function (e) {
             e.target.value = e.target.value.replace(/\D/g, '').slice(0, 3);
         });
 
+        // Abre el modal de pago después de validar que se ha seleccionado un entrenador.
         function openPaymentModal() {
-            // Check if a trainer is selected first
             const select = document.getElementById('entrenadorId');
             if (!select.value) {
                 alert("Por favor, selecciona un entrenador primero.");
@@ -173,16 +169,17 @@
             modal.style.display = 'flex';
         }
 
+        // Cierra el modal de pago.
         function closePaymentModal() {
             modal.style.display = 'none';
         }
 
+        // Valida los datos del formulario de pago y envía el formulario si todo es correcto.
         function processPayment() {
             let cardValue = document.getElementById('cardNumber').value.replace(/\s/g, '');
             let expiryValue = document.getElementById('expiryDate').value;
             let cvvValue = document.getElementById('cvv').value;
 
-            // Simple validations
             if (cardValue.length !== 16) {
                 showError("El número de tarjeta debe tener 16 dígitos.");
                 return;
@@ -198,7 +195,6 @@
                 return;
             }
 
-            // Expiry date validation
             let parts = expiryValue.split('/');
             let month = parseInt(parts[0], 10);
             let year = parseInt(parts[1], 10);
@@ -209,28 +205,25 @@
             }
 
             let today = new Date();
-            let currentYear = today.getFullYear() % 100; // last two digits
+            let currentYear = today.getFullYear() % 100;
             let currentMonth = today.getMonth() + 1;
 
-            if (year < currentYear || (year === currentYear && month <= currentMonth)) {
-                // strictly after current date logic: if it's the exact current month, it's expired or about to expire. A valid date must be strictly after current date. Actually the user said strictly after datetimenow. Let's assume if it is current month and year it is okay, or if the user meant strictly later, month > currentMonth. Let's do strictly later:
-                if (year < currentYear || (year === currentYear && month < currentMonth)) {
-                    showError("La tarjeta está caducada o la fecha no es válida.");
-                    return;
-                }
+            if (year < currentYear || (year === currentYear && month < currentMonth)) {
+                showError("La tarjeta está caducada o la fecha no es válida.");
+                return;
             }
 
-            // Success validation
             alert("Pago aceptado. Has contratado el plan Premium y se te ha asignado tu entrenador.");
             form.submit();
         }
 
+        // Muestra un mensaje de error en la UI.
         function showError(msg) {
             errorDiv.textContent = '❌ ' + msg;
             errorDiv.style.display = 'block';
         }
 
-        // Close modal if clicked outside
+        // Cierra el modal si se hace clic fuera de él.
         window.onclick = function (event) {
             if (event.target === modal) {
                 closePaymentModal();

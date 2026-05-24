@@ -87,3 +87,23 @@
     padding: 8px 12px;
     font-size: 13px;
 }
+
+/* ===== ALERT ERROR WITH WARNING ICON ===== */
+.alert-error {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.alert-error::before {
+    content: "⚠";
+    font-size: 1.1rem;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+/* ===== TOGGLE PASSWORD ICON ===== */
+.toggle-icon {
+    width: 20px;
+    height: 20px;
+}

@@ -329,6 +329,10 @@ body {
     margin-bottom: 48px;
 }
 
+.lp-section-label-xl {
+    margin-bottom: 56px;
+}
+
 .lp-section-tag {
     display: inline-block;
     font-size: 12px;

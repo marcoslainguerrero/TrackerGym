@@ -21,11 +21,11 @@
                 <li><a th:href="@{/cliente/anadir-ejercicio}">Añadir Ejercicio</a></li>
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
-                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img th:src="@{/img/notification.svg}" alt="Notificaciones" style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;"> Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
+                <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion"><img th:src="@{/img/notification.svg}" alt="Notificaciones"> Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}" th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
-                <form th:action="@{/logout}" method="post" style="margin:0">
+                <form th:action="@{/logout}" method="post">
                     <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
                 </form>
             </div>
@@ -67,8 +67,7 @@
 
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary btn-block">Guardar Cambios</button>
-                    <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary btn-block"
-                        style="text-align: center;">Cancelar</a>
+                    <a th:href="@{/cliente/ejercicios}" class="btn btn-secondary btn-block">Cancelar</a>
                 </div>
             </form>
         </div>

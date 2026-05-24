@@ -13,9 +13,7 @@
 <body>
     <nav class="top-navbar">
         <div class="navbar-container">
-            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link"
-                    style="font-size: 20px; font-weight: 800; letter-spacing: -0.5px; color: #ffffff;">TrackerGym</a>
-            </div>
+            <div class="navbar-brand"><a th:href="@{/home}" class="brand-link">TrackerGym</a></div>
             <ul class="navbar-menu">
                 <li><a th:href="@{/home}">Dashboard</a></li>
                 <li><a th:href="@{/cliente/ejercicios}">Ejercicios</a></li>
@@ -24,14 +22,13 @@
                 <li><a th:href="@{/cliente/contratar-entrenador}">Entrenador</a></li>
                 <li><a th:href="@{/cliente/historial}">Historial</a></li>
                 <li><a th:href="@{/cliente/notificaciones}" class="nav-link-notificacion active"><img
-                            th:src="@{/img/notification.svg}" alt="Notificaciones"
-                            style="width: 1.2em; height: 1.2em; vertical-align: middle; margin-right: 4px;">
+                            th:src="@{/img/notification.svg}" alt="Notificaciones">
                         Notificaciones<span th:if="${notificacionesNoLeidas != null and notificacionesNoLeidas > 0}"
                             th:text="${notificacionesNoLeidas}" class="badge-notificacion"></span></a></li>
             </ul>
             <div class="navbar-user">
                 <strong th:text="${#authentication.name}"></strong>
-                <form th:action="@{/logout}" method="post" style="margin:0">
+                <form th:action="@{/logout}" method="post">
                     <button type="submit" class="btn btn-danger btn-sm">Cerrar Sesión</button>
                 </form>
             </div>
@@ -39,12 +36,10 @@
     </nav>
 
     <div class="content-wrap">
-        <div class="page-header" style="text-align: center; margin-bottom: 40px;">
-            <h1><img th:src="@{/img/notification.svg}" alt="Notificaciones"
-                    style="width: 1em; height: 1em; vertical-align: middle; margin-right: 8px;"> Historial de
+        <div class="page-header page-header-center">
+            <h1><img th:src="@{/img/notification.svg}" alt="Notificaciones" class="icon-inline"> Historial de
                 Notificaciones.</h1>
-            <p style="color: var(--text-muted);">Registro de modificaciones realizadas por tu entrenador en tus series.
-            </p>
+            <p>Registro de modificaciones realizadas por tu entrenador en tus series.</p>
         </div>
 
         <div class="notifications-container">
